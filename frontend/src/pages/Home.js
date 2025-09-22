@@ -6,6 +6,7 @@ import ChatModal from '../components/ChatModal';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const { updateWeatherData } = useUser();
   const { currentLanguage, supportedLanguages, changeLanguage, getLanguageFlag, t } = useLanguage();
   const [weather, setWeather] = useState({
