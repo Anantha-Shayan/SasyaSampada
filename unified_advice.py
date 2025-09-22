@@ -54,8 +54,6 @@ def fetch_highest_market_price(state, district, market, date=None):
         "format": "json",
         "limit": 1000
     }
-    if date:
-        params["filters[arrival_date]"] = date
     if state:
         params["filters[state]"] = state
     if district:
@@ -222,7 +220,7 @@ def give_advice(user_input, state, district, Market):
     return advice.strip()
 
 
-# ------------------ Example ------------------
+
 if __name__ == "__main__":
     user_input = {
         "N": 90, "P": 42, "K": 43,
