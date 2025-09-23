@@ -10,7 +10,7 @@ Agrigrow is a **full-stack React + FastAPI application** that empowers farmers w
 - **🐛 Pest Detection** – AI-powered pest identification from images
 - **🤖 AI Chat Assistant** – LangChain-powered chatbot for agricultural queries
 - **📱 Mobile-First Design** – Responsive interface optimized for smartphones
-- **NOTE : There is an one live link but it is just the 50% and the frontend UI part so you can just take mobile view feel to know how it will look but bakcend is yet not functioning 
+- **NOTE : There is an one live link but it is just the 50% and the frontend UI part so you can just take mobile view feel to know how it will look but bakcend is yet not functioning**
 
 ---
 
