@@ -121,7 +121,7 @@ API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 cd backend
 python main_fresh.py
 ```
-**🚨NOTE: might the chatbot will not work is will display - user not found / 401 beacuse of the API is broke or lost because the Key has been also commited along with the code that will be reason else its working just need to change the key.
+**🚨NOTE: might the chatbot will not work is will display - user not found / 401 beacuse of the API is broke or lost because the Key has been also commited along with the code that will be reason else its working just need to change the key.**
 
 Runs on [http://localhost:8001](http://localhost:8001)
 
