@@ -7,16 +7,14 @@ import pandas as pd
 import json
 from datetime import datetime
 
-# Get the directory where this script is located
-script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Load models with proper paths
-model = joblib.load(os.path.join(script_dir, "cr_model.pkl"))  # trained crop recommendation model
-scaler = joblib.load(os.path.join(script_dir, "cr_scaler.pkl"))
-encoder = joblib.load(os.path.join(script_dir, "cr_encoder.pkl"))
 
-# Load district crop map
-with open(os.path.join(script_dir, "district_crop_map.json"), "r") as f:
+model = joblib.load("cr_model.pkl")  # trained crop recommendation mgit clone odel
+scaler = joblib.load("cr_scaler.pkl")
+encoder = joblib.load("cr_encoder.pkl")
+
+
+with open("district_crop_map.json", "r") as f:
     district_crop_map = json.load(f)
 
 
@@ -46,84 +44,47 @@ def get_weather(city):
 
 # mandi
 def fetch_highest_market_price(state, district, market, date=None):
-    """
-    Fetch market prices from Indian government API.
-    Falls back to realistic mock data if API is not available.
-    """
     api_key = os.getenv("MANDI_PRICE_KEY")
+    if not api_key:
+        raise ValueError("MANDI_PRICE_KEY not found in environment variables.")
 
-    # Check if we have a valid API key (not a URL)
-    if not api_key or api_key.startswith("http"):
-        print("⚠️ Market API key not configured, using realistic market data...")
-        # Return realistic market prices for common crops
-        market_prices = {
-            "Wheat": 2350,
-            "Rice": 1950,
-            "Maize": 1650,
-            "Cotton": 3200,
-            "Soybean": 2800,
-            "Drumstick": 10300,
-            "Tomato": 2500,
-            "Onion": 1800,
-            "Potato": 1200,
-            "Sugarcane": 350,
-            "Groundnut": 4500,
-            "Sunflower": 3800
-        }
+    url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
+    params = {
+        "api-key": api_key,
+        "format": "json",
+        "limit": 1000
+    }
+    if state:
+        params["filters[state]"] = state
+    if district:
+        params["filters[district]"] = district
+    if market:
+        params["filters[market]"] = market
 
-        # Find the highest priced crop
-        best_crop = max(market_prices, key=market_prices.get)
-        best_price = market_prices[best_crop]
-        return best_crop, best_price
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
 
-    try:
-        url = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
-        params = {
-            "api-key": api_key,
-            "format": "json",
-            "limit": 1000
-        }
-        if date:
-            params["filters[arrival_date]"] = date
-        if state:
-            params["filters[state]"] = state
-        if district:
-            params["filters[district]"] = district
-        if market:
-            params["filters[market]"] = market
+    df = pd.DataFrame(data["records"])
+    df = df.rename(columns={
+        "Modal_x0020_Price": "modal_price",
+        "modal_price": "modal_price"
+    })
 
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        data = response.json()
+    if "modal_price" not in df.columns:
+        raise KeyError(f"'modal_price' column not found. Got: {df.columns.tolist()}")
 
-        df = pd.DataFrame(data["records"])
-        df = df.rename(columns={
-            "Modal_x0020_Price": "modal_price",
-            "modal_price": "modal_price"
-        })
+    df["modal_price"] = pd.to_numeric(df["modal_price"], errors="coerce")
+    df = df.dropna(subset=["modal_price"])
 
-        if "modal_price" not in df.columns:
-            print(f"⚠️ Modal price column not found. Available columns: {df.columns.tolist()}")
-            return "Drumstick", 10300
+    if df.empty:
+        return None, None
 
-        df["modal_price"] = pd.to_numeric(df["modal_price"], errors="coerce")
-        df = df.dropna(subset=["modal_price"])
+    best_row = df.loc[df["modal_price"].idxmax()]
+    best_crop = best_row["commodity"]
+    best_price = best_row["modal_price"]
 
-        if df.empty:
-            print("⚠️ No valid market data found, using fallback...")
-            return "Drumstick", 10300
-
-        best_row = df.loc[df["modal_price"].idxmax()]
-        best_crop = best_row["commodity"]
-        best_price = best_row["modal_price"]
-
-        return best_crop, best_price
-
-    except Exception as e:
-        print(f"⚠️ Market API error: {e}")
-        print("Using realistic fallback market data...")
-        # Fallback to realistic mock data
-        return "Drumstick", 10300
+    return best_crop, best_price
 
 
 # Crop Suitability Rules - from ChatGPT
@@ -259,25 +220,14 @@ def give_advice(user_input, state, district, Market):
     return advice.strip()
 
 
-# ------------------ Example ------------------
-if __name__ == "__main__":
-    # Load environment variables for standalone testing
-    from dotenv import load_dotenv
-    load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
+if __name__ == "__main__":
     user_input = {
         "N": 90, "P": 42, "K": 43,
         "temperature": 25, "humidity": 80,
         "ph": 6.5, "rainfall": 120
     }
-
-    try:
-        advice = give_advice(user_input, state="Karnataka", district="Bangalore", Market="Ramanagara")
-        print('-'*50)
-        print(advice)
-        print('-'*50)
-    except Exception as e:
-        print('-'*50)
-        print(f"⚠️ Example failed (this is normal if API key is not configured): {e}")
-        print("✅ ML models are working fine - this is just the example test")
-        print('-'*50)
+    advice = give_advice(user_input, state="Karnataka", district="Bangalore", Market="Ramanagara")
+    print('-'*50)
+    print(advice)
+    print('-'*50)
