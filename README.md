@@ -1,8 +1,9 @@
 # 🌿 SasyaSampada - Farmer's Friend
 
 ![Python](https://img.shields.io/badge/Python-blue)
-![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Scikit%20Learn-orange)
+![LangChain](https://img.shields.io/badge/LangChain-blue)
 ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-yellow)
+![Machine Learning](https://img.shields.io/badge/Scikit%20Learn-orange)
 ![React](https://img.shields.io/badge/React-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-green)
 
