@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { API_BASE_URL } from '../services/api';
 
 
 const Chat = () => {
@@ -26,7 +27,7 @@ const Chat = () => {
   useEffect(() => {
     const loadLanguages = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/chat/languages');
+        const response = await fetch(`${API_BASE_URL}/api/chat/languages`);
         const data = await response.json();
         if (data.success) {
           setSupportedLanguages(data.languages);
@@ -81,7 +82,7 @@ const Chat = () => {
       }
       context.location = { district: 'Bangalore', state: 'Karnataka' };
 
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

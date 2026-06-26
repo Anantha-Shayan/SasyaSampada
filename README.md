@@ -23,211 +23,95 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 
 ---
 
+
 ## 🏗️ Project Structure
 
 ```text
-sasyasampada/
-├── src/                        # React frontend
-│   ├── components/             # Reusable UI components
-│   ├── pages/                  # Page-level components
-│   ├── context/                # Global state management
-│   ├── services/               # API service layer
-│   └── App.js                  # Root app
-├── backend/                    # FastAPI backend
-│   ├── main.py                 # Backend API entrypoint
-│   ├── plant_api.py            # Plant-related endpoints
-│   ├── chat_api.py             # AI chatbot endpoints
-│   ├── ml_integration.py       # ML model inference utilities
-│   └── requirements.txt        # Python dependencies
-├── ml-model/                   # Machine learning models and scripts
-│   ├── crop_recommendation.py  # ML model for crop recommendations
-│   ├── unified_advice.py       # Core advisory logic
-│   ├── langchain_integration.py # AI chat integration
-│   └── *.pkl                   # Trained ML models
-├── public/                     # Static frontend assets
-└── data/                       # Sample datasets / images
-````
-
-## 📚 ml-model Directory Breakdown
-
-1. **`crop_recommendation.py`**  
-   This script is responsible for training and evaluating the machine learning model that provides crop recommendations based on soil parameters and climatic conditions. It utilizes datasets containing information about various crops and their suitability to different regions.
-
-2. **`unified_advice.py`**  
-   This module integrates the outputs of the crop recommendation model with additional data sources, such as weather forecasts and market prices, to generate comprehensive advisory reports for farmers. It aims to provide actionable insights that consider multiple factors influencing crop selection.
-
-3. **`langchain_integration.py`**  
-   This script facilitates the integration of the LangChain framework with Retrieval Augmented Generation (RAG) that retrieves information from external government websites and relevent youtube transcripts
-   with the backend FastAPI application that is used to build the AI-powered chatbot that assists users by answering agricultural queries and providing personalized advice based on the trained models.
-
-5. **`*.pkl` (Trained Model Files)**  
-   These are serialized machine learning models saved in the pickle format. They include:
-   - The crop recommendation model trained on historical agricultural data.
-   - StandardScaler and OneHotEncoder
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- [Node.js](https://nodejs.org/) v16+
-- [Python](https://www.python.org/downloads/) 3.8+
-- [Git](https://git-scm.com/)
-
----
-
-### 1. Clone the Repository
-```bash
-git clone "https://github.com/Anantha-Shayan/SasyaSampada.git"
-cd SasyaSampada
-````
-
----
-
-### 2. Install Dependencies
-
-#### Frontend
-
-```bash
-npm install
+.
+├── README.md
+├── docker-compose.yml
+├── docs/
+├── backend/
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── pyproject.toml
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── api/
+│   │   ├── services/
+│   │   ├── ml/
+│   │   ├── models/
+│   │   ├── config.py
+│   │   └── utils.py
+│   ├── model_assets/
+│   └── tests/
+├── frontend/
+├── scripts/
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── datasets/
+└── training/
 ```
 
-
-#### Backend
+## Backend
 
 ```bash
 cd backend
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
----
+The backend entry point is `backend/app/main.py`. API routes live in `backend/app/api/`, business logic in `backend/app/services/`, inference code in `backend/app/ml/`, request models in `backend/app/models/`, and shared configuration in `backend/app/config.py`.
 
-### 3. Set Up Environment Variables
+Model assets are loaded from `backend/model_assets/`:
 
-Copy the example file and update with your API keys:
-
-```bash
-cp .env.example .env
+```text
+cr_model.pkl
+cr_scaler.pkl
+cr_encoder.pkl
+district_crop_map.json
+crop_district_map.json
 ```
 
-Example values in `.env`:
-
-```properties
-REACT_APP_API_URL=http://localhost:8000
-BACKEND_PORT=8000
-OPENWEATHER_API_KEY=your_openweather_api_key_here
-MANDI_PRICE_KEY=your_mandi_price_api_key_here
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-KAGGLE_API_TOKEN=your_kaggle_api_token_here
-```
-
----
-
-### 4. Run the Application
-
-Open two terminals for the services:
-
-#### A. Backend (FastAPI)
-
-```bash
-cd backend
-python main.py
-```
-
-#### B. Frontend (React)
+## Frontend
 
 ```bash
 cd frontend
-PATH="/home/anantha/Projects/SasyaSampada/frontend/.venv/bin:$PATH" npm start
+npm install
+npm start
 ```
 
-If you want the optional chatbot service too, run:
+The React app expects the backend at `http://localhost:8000` unless `REACT_APP_API_URL` is set.
+
+## Training
+
+Training code is isolated under `training/` and is not imported by the backend at runtime.
+
+```bash
+python training/train_model.py
+python training/preprocess.py
+```
+
+Generated model files and mappings are written to `backend/model_assets/`. Raw downloads are placed in `data/raw/`, cleaned outputs in `data/processed/`, and static datasets in `data/datasets/`.
+
+## Docker
+
+```bash
+docker compose up --build
+```
+
+Backend: `http://localhost:8000`
+Frontend: `http://localhost:3000`
+
+## Tests
 
 ```bash
 cd backend
-python main_fresh.py
+pytest
 ```
-
----
-
-### 5. Run with Docker Compose (Recommended)
-
-Alternatively, use Docker Compose to run both services in containers:
-
-```bash
-docker-compose up --build
-```
-
-This will:
-- Build Docker images for frontend and backend
-- Start both services on ports 3000 (frontend) and 8000 (backend)
-- Use environment variables from `.env` file
-
-To stop the services:
-
-```bash
-docker-compose down
-```
-
----
-
-## 📱 Application Pages
-
-### 🏠 Dashboard
-
-* Weather overview
-* Quick advisory cards
-* Real-time mandi prices
-* AI chatbot interface
-
-### 🌱 Crop Advisory
-
-* Input soil parameters (N, P, K, pH, rainfall, etc.) manually or by uploading Soil Card
-* ML-powered crop recommendations
-* Weather validation
-* Market price integration
-
-### 🌤️ Weather
-
-* Current conditions
-* 5-day forecast
-* Risk alerts (frost, heat stress)
-
-### 💰 Market Prices
-
-* Real-time mandi price feed
-* Price trends & crop search
-
-### 🐛 Pest Detection
-
-* Upload pest images
-* AI-based detection & treatment suggestions
-
----
-
-## 🔧 API Endpoints
-
-### Advisory
-
-* `POST /api/advisory` → Get crop recommendations
-
-### Weather
-
-* `POST /api/weather` → Fetch weather data
-
-### Market
-
-* `POST /api/market-prices` → Get mandi price data
-
-### Chat
-
-* `POST /api/chat` → Chat with AI assistant
-
-### Data
-
-* `GET /api/crops` → List all crops
-* `GET /api/districts` → List all districts
-* `GET /api/district-crops/{state}/{district}` → Crops by district
 
 ---
 
@@ -258,40 +142,6 @@ Agrigrow uses multiple ML workflows:
 - **OpenRouter (Google Gemini) OR Hugging Face models** – LLM-powered chatbot responses  
                         
 
----
-
-## 🛠️ Development
-
-Frontend:
-
-```bash
-npm start          # Dev server
-npm run build      # Build for production
-npm test           # Run tests
-```
-
-Backend:
-
-```bash
-cd backend
-uvicorn main:app --reload --port 8000
-```
-
-ML Model Training:
-
-```bash
-cd ml-model
-python crop_recommendation.py
-```
-
----
-
-## 📱 Mobile-First Design
-
-* Tailwind CSS responsive layout
-* Touch-friendly UI
-* Optimized for small screens
-* PWA ready
 
 ---
 

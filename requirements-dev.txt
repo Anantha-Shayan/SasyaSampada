@@ -1,6 +1,7 @@
 # Development convenience dependencies
--r backend/requirements-simple.txt
+-r backend/requirements.txt
 pytest
 pytest-cov
 black
 flake8
+openai

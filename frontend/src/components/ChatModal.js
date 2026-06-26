@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE_URL } from '../services/api';
 
 
 const ChatModal = ({ isOpen, onClose }) => {
@@ -118,7 +119,7 @@ const ChatModal = ({ isOpen, onClose }) => {
       }
       context.location = { district: 'Bangalore', state: 'Karnataka' };
 
-      const response = await fetch('http://localhost:8001/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../services/api';
 
 const LanguageContext = createContext();
 
@@ -18,7 +19,7 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     const loadLanguages = async () => {
       try {
-        const response = await fetch('http://localhost:8001/api/chat/languages');
+        const response = await fetch(`${API_BASE_URL}/api/chat/languages`);
         const data = await response.json();
         if (data.success) {
           setSupportedLanguages(data.languages);

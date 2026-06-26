@@ -14,4 +14,3 @@ venv
 .vscode
 .idea
 *.log
-ml-model/crop-recommendation-dataset.zip
