@@ -65,5 +65,4 @@ Thumbs.db
 
 # Local development configuration
 *.log
-.env*
 config.local.js
