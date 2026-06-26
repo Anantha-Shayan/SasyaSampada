@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_PORT=8000
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - MANDI_PRICE_KEY=${MANDI_PRICE_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - KAGGLE_API_TOKEN=${KAGGLE_API_TOKEN}
+    volumes:
+      - ./backend:/app/backend
+      - ./ml-model:/app/ml-model
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend

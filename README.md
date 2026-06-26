@@ -210,6 +210,13 @@ python main_fresh.py
 
 ---
 
+
+## 📈 ML Training Results
+
+- **22 crops** learned (rice, wheat, maize, cotton, coffee, etc.)
+- **Random Forest** selected as best model
+- Trained on 2200 samples (100 per crop)
+
 ## 🤖 ML Integration
 
 Agrigrow uses multiple ML workflows:
