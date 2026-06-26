@@ -150,6 +150,27 @@ python main_fresh.py
 
 ---
 
+### 5. Run with Docker Compose (Recommended)
+
+Alternatively, use Docker Compose to run both services in containers:
+
+```bash
+docker-compose up --build
+```
+
+This will:
+- Build Docker images for frontend and backend
+- Start both services on ports 3000 (frontend) and 8000 (backend)
+- Use environment variables from `.env` file
+
+To stop the services:
+
+```bash
+docker-compose down
+```
+
+---
+
 ## 📱 Application Pages
 
 ### 🏠 Dashboard
