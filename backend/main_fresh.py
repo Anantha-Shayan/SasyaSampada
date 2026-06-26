@@ -13,10 +13,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv('../.env')
 
-# Set API key directly for testing
-OPENROUTER_API_KEY = "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"
+# Load API key from environment, if present
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
 
-print(f"🔑 OpenRouter API Key: {bool(OPENROUTER_API_KEY)}")
+print(f"🔑 OpenRouter API Key configured: {bool(OPENROUTER_API_KEY)}")
 
 # Initialize OpenAI client
 try:

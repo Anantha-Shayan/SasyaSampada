@@ -13,10 +13,12 @@ from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
 from openai import OpenAI
 
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 # Load environment variables from parent directory
 # Try multiple paths to find .env file
 env_paths = [
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'),  # Parent directory
+    os.path.join(PROJECT_ROOT, '.env'),  # Parent directory
     os.path.join(os.path.dirname(__file__), '..', '.env'),  # Relative parent
     '.env',  # Current directory
     '../.env'  # Relative parent
@@ -62,8 +64,9 @@ app.add_middleware(
 )
 
 # Add the ml-model directory to the path
-ml_model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml-model')
-sys.path.append(ml_model_path)
+ml_model_path = os.path.join(PROJECT_ROOT, 'ml-model')
+if ml_model_path not in sys.path:
+    sys.path.append(ml_model_path)
 
 # Try to load ML models and functions
 ML_MODELS = {}
@@ -72,7 +75,7 @@ WEATHER_AVAILABLE = False
 
 try:
     # Load ML models
-    model_path = "../ml-model/"
+    model_path = os.path.join(PROJECT_ROOT, "ml-model")
     ML_MODELS['model'] = joblib.load(os.path.join(model_path, "cr_model.pkl"))
     ML_MODELS['scaler'] = joblib.load(os.path.join(model_path, "cr_scaler.pkl"))
     ML_MODELS['encoder'] = joblib.load(os.path.join(model_path, "cr_encoder.pkl"))
@@ -568,4 +571,4 @@ async def get_supported_languages():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("BACKEND_PORT", "8000")))

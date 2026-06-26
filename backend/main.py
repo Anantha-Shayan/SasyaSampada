@@ -12,21 +12,37 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
 
-# Load environment variables from parent directory
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ENV_PATHS = [
+    os.path.join(PROJECT_ROOT, '.env'),
+    os.path.join(os.path.dirname(__file__), '..', '.env'),
+    '.env',
+    '../.env',
+]
+
+for env_path in ENV_PATHS:
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+        break
 
 # Add the ml-model directory to the path
-ml_model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml-model')
-sys.path.append(ml_model_path)
+ml_model_path = os.path.join(PROJECT_ROOT, 'ml-model')
+if ml_model_path not in sys.path:
+    sys.path.append(ml_model_path)
 
 # Import your existing ML functions
 try:
-    from unified_advice import give_advice, get_weather, fetch_highest_market_price
-    ML_AVAILABLE = True
-    print("✅ ML models loaded successfully")
+    from unified_advice import (
+        give_advice,
+        get_weather,
+        fetch_highest_market_price,
+        ML_AVAILABLE as UNIFIED_ML_AVAILABLE,
+    )
+    ML_AVAILABLE = UNIFIED_ML_AVAILABLE
+    print("✅ ML helpers loaded successfully")
     print(f"📁 ML model path: {ml_model_path}")
 except ImportError as e:
-    print(f"⚠️ ML models not available: {e}")
+    print(f"⚠️ ML helpers not available: {e}")
     print(f"📁 Attempted ML model path: {ml_model_path}")
     ML_AVAILABLE = False
 

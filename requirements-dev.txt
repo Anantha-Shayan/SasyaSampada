@@ -1,0 +1,6 @@
+# Development convenience dependencies
+-r backend/requirements-simple.txt
+pytest
+pytest-cov
+black
+flake8

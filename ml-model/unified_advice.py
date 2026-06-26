@@ -6,16 +6,29 @@ import numpy as np
 import pandas as pd
 import json
 from datetime import datetime
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_DIR = BASE_DIR
 
+model = None
+scaler = None
+encoder = None
+district_crop_map = {}
+ML_AVAILABLE = False
 
-model = joblib.load("cr_model.pkl")  # trained crop recommendation mgit clone odel
-scaler = joblib.load("cr_scaler.pkl")
-encoder = joblib.load("cr_encoder.pkl")
-
-
-with open("district_crop_map.json", "r") as f:
-    district_crop_map = json.load(f)
+try:
+    model = joblib.load(MODEL_DIR / "cr_model.pkl")
+    scaler = joblib.load(MODEL_DIR / "cr_scaler.pkl")
+    encoder = joblib.load(MODEL_DIR / "cr_encoder.pkl")
+    with open(MODEL_DIR / "district_crop_map.json", "r") as f:
+        district_crop_map = json.load(f)
+    ML_AVAILABLE = True
+    print(f"✅ ML models loaded successfully from {MODEL_DIR}")
+except FileNotFoundError as exc:
+    print(f"⚠️ ML model file missing: {exc.filename}. Falling back to simple advice mode.")
+except Exception as exc:
+    print(f"⚠️ Could not load ML models: {exc}. Falling back to simple advice mode.")
 
 
 # weather
@@ -147,6 +160,23 @@ def give_advice(user_input, state, district, Market):
     else:
         raise ValueError("❌ user_input must be dict, list, np.array, or DataFrame")
 
+    if not ML_AVAILABLE or model is None or scaler is None or encoder is None:
+        soil_data = user_df.iloc[0]
+        if soil_data["ph"] < 6.0:
+            recommended_crop = "Rice"
+        elif soil_data["ph"] > 7.5:
+            recommended_crop = "Wheat"
+        else:
+            recommended_crop = "Maize"
+
+        return f"""
+        🌱 Simple advisory fallback:
+        - Recommended Crop: {recommended_crop}
+        - Soil pH: {soil_data['ph']}
+        - Location: {district}, {state}
+        - Market: {Market}
+        """.strip()
+
     # ML Prediction
     soil_scaled = scaler.transform(user_df)
     ml_pred_idx = model.predict(soil_scaled)[0]
@@ -201,14 +231,17 @@ def give_advice(user_input, state, district, Market):
         crops_in_district = district_crop_map[key]
         if final_crop not in crops_in_district:
             print(f"⚠️ {final_crop} is not typically grown in {district}, {state}. Suggesting alternative...")
-            # remove above line in final version
             final_crop = crops_in_district[0]
 
     # Market Prices
-    market_prices = fetch_highest_market_price(state, district, Market, date=datetime.now().strftime("%Y-%m-%d"))
-    if market_prices:
-        best_crop, best_price = market_prices
-    else:
+    try:
+        market_prices = fetch_highest_market_price(state, district, Market, date=datetime.now().strftime("%Y-%m-%d"))
+        if market_prices:
+            best_crop, best_price = market_prices
+        else:
+            best_crop, best_price = final_crop, "N/A"
+    except Exception as exc:
+        print(f"⚠️ Market API unavailable: {exc}")
         best_crop, best_price = final_crop, "N/A"
 
     advice = f"""

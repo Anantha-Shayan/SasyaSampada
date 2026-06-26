@@ -78,8 +78,8 @@ sasyasampada/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/agrigrow.git
-cd agrigrow
+git clone "https://github.com/Anantha-Shayan/SasyaSampada.git"
+cd SasyaSampada
 ````
 
 ---
@@ -107,40 +107,41 @@ pip install -r requirements.txt
 Copy the example file and update with your API keys:
 
 ```bash
-cp env.example .env
+cp .env.example .env
 ```
 
-`.env` file example:
+Example values in `.env`:
 
 ```properties
 REACT_APP_API_URL=http://localhost:8000
-OPENWEATHER_API_KEY=your_openweather_api_key
-MANDI_PRICE_KEY=your_mandi_price_api_key
-HUGGINGFACEHUB_API_KEY=your_huggingface_api_key
+BACKEND_PORT=8000
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+MANDI_PRICE_KEY=your_mandi_price_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+KAGGLE_API_TOKEN=your_kaggle_api_token_here
 ```
 
 ---
 
 ### 4. Run the Application
 
-Open **three terminals** for the services:
+Open two terminals for the services:
 
-#### A. Frontend (React)
-
-```bash
-npm start
-```
-
-
-#### B. Backend (FastAPI - main APIs)
+#### A. Backend (FastAPI)
 
 ```bash
 cd backend
 python main.py
 ```
 
+#### B. Frontend (React)
 
-#### C. Chatbot API Service
+```bash
+cd frontend
+PATH="/home/anantha/Projects/SasyaSampada/frontend/.venv/bin:$PATH" npm start
+```
+
+If you want the optional chatbot service too, run:
 
 ```bash
 cd backend
