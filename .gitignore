@@ -66,3 +66,7 @@ Thumbs.db
 # Local development configuration
 *.log
 config.local.js
+
+# local folder for temporary files
+tmp/
+data/processed/*

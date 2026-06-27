@@ -1,0 +1,80 @@
+[
+  {
+    "document_id": "tnau_crop_production_guide_2020",
+    "title": "Crop Production Guide 2020",
+    "category": "crop_production",
+    "source": "Tamil Nadu Agricultural University",
+    "organization": "TNAU & Directorate of Agriculture, Tamil Nadu",
+    "language": "en",
+    "year": 2020,
+    "filename": "tnau_crop_production_guide_2020.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://agritech.tnau.ac.in/"
+  },
+  {
+    "document_id": "agriwelfare_annual_report_2024_25",
+    "title": "Annual Report 2024-25",
+    "category": "government_policy",
+    "source": "Department of Agriculture & Farmers Welfare",
+    "organization": "Ministry of Agriculture & Farmers Welfare, Government of India",
+    "language": "en",
+    "year": 2024,
+    "filename": "agriwelfare_annual_report_2024_25.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://agriwelfare.gov.in/"
+  },
+  {
+    "document_id": "farmers_handbook_basic_agriculture_2016",
+    "title": "Farmer's Handbook on Basic Agriculture",
+    "category": "farmer_handbook",
+    "source": "MANAGE",
+    "organization": "National Institute of Agricultural Extension Management",
+    "language": "en",
+    "year": 2016,
+    "filename": "farmers_handbook_basic_agriculture_2016.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://www.manage.gov.in/"
+  },
+  {
+    "document_id": "icar_kharif_agro_advisories_2025",
+    "title": "ICAR Kharif Agro-Advisories for Farmers",
+    "category": "agro_advisory",
+    "source": "ICAR",
+    "organization": "Indian Council of Agricultural Research",
+    "language": "en",
+    "year": 2025,
+    "filename": "icar_kharif_agro_advisories_2025.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://icar.org.in/"
+  },
+  {
+    "document_id": "pmfby_operational_guidelines_revised",
+    "title": "Pradhan Mantri Fasal Bima Yojana Operational Guidelines",
+    "category": "crop_insurance",
+    "source": "Department of Agriculture & Farmers Welfare",
+    "organization": "Ministry of Agriculture & Farmers Welfare",
+    "language": "en",
+    "year": 2018,
+    "filename": "pmfby_operational_guidelines_revised.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://pmfby.gov.in/"
+  },
+  {
+    "document_id": "manage_natural_farming_study_material_2023",
+    "title": "Study Material on Natural Farming",
+    "category": "natural_farming",
+    "source": "MANAGE",
+    "organization": "National Institute of Agricultural Extension Management",
+    "language": "en",
+    "year": 2023,
+    "filename": "manage_natural_farming_study_material_2023.pdf",
+    "version": 1,
+    "status": "raw",
+    "source_url": "https://www.manage.gov.in/"
+  }
+]
