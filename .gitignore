@@ -69,4 +69,15 @@ config.local.js
 
 # local folder for temporary files
 tmp/
-data/processed/*
+
+# Knowledge-base pipeline artifacts (keep directory structure only)
+data/processed/**
+!data/processed/.gitkeep
+data/parsed/**
+!data/parsed/.gitkeep
+data/metadata/**
+!data/metadata/.gitkeep
+data/embeddings/**
+!data/embeddings/.gitkeep
+data/logs/**
+!data/logs/.gitkeep

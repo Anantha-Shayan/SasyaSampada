@@ -30,7 +30,7 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 .
 ├── README.md
 ├── docker-compose.yml
-├── docs/
+├── docs/                          # Architecture & RAG design (start here)
 ├── backend/
 │   ├── Dockerfile
 │   ├── requirements.txt
@@ -38,6 +38,16 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 │   ├── app/
 │   │   ├── main.py
 │   │   ├── api/
+│   │   │   ├── routes.py          # Active API routes
+│   │   │   └── v1/endpoints/      # Planned RAG route modules
+│   │   ├── core/                  # Config, logging, DI (planned)
+│   │   ├── domain/schemas/        # Target Pydantic home
+│   │   ├── ingestion/             # PDF → chunks → vectors
+│   │   ├── embeddings/
+│   │   ├── vector_db/
+│   │   ├── retrieval/
+│   │   ├── rag/
+│   │   ├── llm/
 │   │   ├── services/
 │   │   ├── ml/
 │   │   ├── models/
@@ -45,14 +55,36 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 │   │   └── utils.py
 │   ├── model_assets/
 │   └── tests/
+│       ├── unit/
+│       └── integration/
 ├── frontend/
 ├── scripts/
 ├── data/
-│   ├── raw/
+│   ├── raw/                       # Source PDFs
+│   ├── parsed/
 │   ├── processed/
+│   ├── metadata/
+│   ├── embeddings/
+│   ├── logs/
+│   ├── manifests/
 │   └── datasets/
 └── training/
 ```
+
+## 📚 RAG Documentation
+
+Production RAG system design is documented in [`docs/`](docs/README.md). **Phase 1 (System Design)** is complete; implementation follows milestone-by-milestone.
+
+| Document | Topic |
+|----------|-------|
+| [01_project_overview](docs/01_project_overview.md) | Goals and scope |
+| [02_architecture](docs/02_architecture.md) | Components and folders |
+| [03_request_flow](docs/03_request_flow.md) | HTTP lifecycle |
+| [04_data_flow](docs/04_data_flow.md) | Write/read data paths |
+| [05_rag_pipeline](docs/05_rag_pipeline.md) | Query-time RAG (planned) |
+| [06_ingestion_pipeline](docs/06_ingestion_pipeline.md) | Ingestion stages (planned) |
+| [16_scalability](docs/16_scalability.md) | Scale-out strategy |
+| [23_engineering_decisions](docs/23_engineering_decisions.md) | ADR log |
 
 ## Backend
 

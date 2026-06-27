@@ -1,0 +1,34 @@
+# SasyaSampada RAG — Documentation Index
+
+Production-grade Retrieval Augmented Generation (RAG) documentation for the SasyaSampada agricultural advisory platform.
+
+## Phase Status
+
+| Phase | Topic | Status |
+|-------|-------|--------|
+| 1 | System Design & Architecture | Complete |
+| 2 | Knowledge Base Organization | Planned |
+| 3 | Ingestion Pipeline | Planned |
+| 4–18 | Implementation milestones | Planned |
+
+## Core Documents
+
+| # | Document | Description |
+|---|----------|-------------|
+| 01 | [Project Overview](01_project_overview.md) | Goals, scope, and current state |
+| 02 | [Architecture](02_architecture.md) | System design, folder structure, components |
+| 03 | [Request Flow](03_request_flow.md) | HTTP request lifecycle |
+| 04 | [Data Flow](04_data_flow.md) | End-to-end data movement |
+| 05 | [RAG Pipeline](05_rag_pipeline.md) | Query-time RAG architecture (planned) |
+| 06 | [Ingestion Pipeline](06_ingestion_pipeline.md) | Document ingestion architecture (planned) |
+| 16 | [Scalability](16_scalability.md) | Horizontal scaling and growth path |
+
+## Engineering Reference
+
+| # | Document | Description |
+|---|----------|-------------|
+| 23 | [Engineering Decisions](23_engineering_decisions.md) | ADR-style decision log |
+
+## Upcoming (Later Phases)
+
+Documents 07–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.
