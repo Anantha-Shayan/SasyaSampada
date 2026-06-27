@@ -47,3 +47,29 @@ class MarketPriceRequest(BaseModel):
     district: str
     market: str
     date: Optional[str] = None
+
+
+class DocumentMetadata(BaseModel):
+    document_id: str
+    title: Optional[str] = None
+    quality: Optional[str] = None
+    source_url: Optional[str] = None
+
+
+class ParsedDocument(BaseModel):
+    document_id: str
+    metadata: dict[str, Any]
+    pages: list[dict[str, Any]]
+    source_url: Optional[str] = None
+
+class CleanDocument(BaseModel):
+    document_id: str
+    metadata: DocumentMetadata
+    content: str
+
+class DocumentChunk(BaseModel):
+    document_id: str
+    metadata: DocumentMetadata
+    chunks: dict[int, str]
+    chunk_size: int
+    total_chunks: int
