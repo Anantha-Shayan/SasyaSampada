@@ -7,7 +7,7 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | Phase | Topic | Status |
 |-------|-------|--------|
 | 1 | System Design & Architecture | Complete |
-| 2 | Knowledge Base Organization | Planned |
+| 2 | Knowledge Base Organization | Complete |
 | 3 | Ingestion Pipeline | Planned |
 | 4–18 | Implementation milestones | Planned |
 
@@ -21,6 +21,7 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 04 | [Data Flow](04_data_flow.md) | End-to-end data movement |
 | 05 | [RAG Pipeline](05_rag_pipeline.md) | Query-time RAG architecture (planned) |
 | 06 | [Ingestion Pipeline](06_ingestion_pipeline.md) | Document ingestion architecture (planned) |
+| — | [Knowledge Base Organization](knowledge_base_organization.md) | Disk layout, versioning, dedup, lifecycle |
 | 16 | [Scalability](16_scalability.md) | Horizontal scaling and growth path |
 
 ## Engineering Reference

@@ -131,6 +131,45 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-011: Manifest-driven document catalog
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 2) |
+| **Context** | Need single source of truth for 6+ PDFs with lifecycle |
+| **Decision** | `data/manifests/documents.json` validated by Pydantic + JSON Schema |
+| **Alternatives** | SQLite catalog; YAML front matter in PDFs |
+| **Why not** | JSON diffs well in PRs; no DB dependency for MVP |
+| **Tradeoffs** | File-level locking at scale; shard later |
+
+---
+
+## ADR-012: Versioned artifact paths
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 2) |
+| **Context** | Document updates must not destroy previous artifacts |
+| **Decision** | `{document_id}/v{version}/` under parsed, processed, metadata, embeddings |
+| **Alternatives** | Overwrite in place; timestamp paths |
+| **Why not overwrite** | Cannot rollback or diff; breaks reproducibility |
+| **Tradeoffs** | More directories; clear audit trail |
+
+---
+
+## ADR-013: Content-addressable deduplication
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 2) |
+| **Context** | Same PDF may be uploaded under different names |
+| **Decision** | `content_sha256` on raw file; `duplicate_of` points to canonical `document_id` |
+| **Alternatives** | Filename-only dedup; perceptual hash |
+| **Why not filename** | Copies and re-downloads collide |
+| **Tradeoffs** | Must hash on every upload; negligible cost |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

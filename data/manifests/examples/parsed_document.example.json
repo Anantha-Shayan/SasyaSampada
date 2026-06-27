@@ -1,0 +1,26 @@
+{
+  "document_id": "tnau_crop_production_guide_2020",
+  "document_version": 1,
+  "parser": "pymupdf",
+  "parser_version": "1.27.2",
+  "parsed_at": "2026-06-27T00:00:00Z",
+  "page_count": 2,
+  "pages": [
+    {
+      "page_number": 1,
+      "text": "Example page text extracted from PDF...",
+      "has_tables": false,
+      "ocr_applied": false,
+      "char_count": 42
+    },
+    {
+      "page_number": 2,
+      "text": "Second page content...",
+      "has_tables": true,
+      "ocr_applied": false,
+      "char_count": 22
+    }
+  ],
+  "source_filename": "tnau_crop_production_guide_2020.pdf",
+  "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

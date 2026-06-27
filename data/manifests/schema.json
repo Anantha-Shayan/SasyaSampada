@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sasyasampada.local/schemas/document-catalog-entry.json",
+  "title": "DocumentCatalogEntry",
+  "description": "Single entry in data/manifests/documents.json",
+  "type": "object",
+  "required": [
+    "document_id",
+    "title",
+    "category",
+    "filename",
+    "version",
+    "ingestion_status",
+    "lifecycle_status",
+    "language"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]{2,127}$",
+      "description": "Stable snake_case identifier; never changes"
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "category": {
+      "type": "string",
+      "description": "Must exist in categories.json"
+    },
+    "source": { "type": "string" },
+    "organization": { "type": "string" },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "year": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+    "filename": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]+\\.pdf$"
+    },
+    "version": { "type": "integer", "minimum": 1 },
+    "ingestion_status": {
+      "type": "string",
+      "enum": ["pending", "parsing", "cleaning", "chunking", "embedding", "indexing", "indexed", "failed"]
+    },
+    "lifecycle_status": {
+      "type": "string",
+      "enum": ["active", "archived", "deleted"]
+    },
+    "source_url": { "type": "string", "format": "uri" },
+    "content_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "file_size_bytes": { "type": ["integer", "null"], "minimum": 0 },
+    "page_count": { "type": ["integer", "null"], "minimum": 0 },
+    "chunk_count": { "type": ["integer", "null"], "minimum": 0 },
+    "embedding_model": { "type": ["string", "null"] },
+    "embedding_version": { "type": ["integer", "null"], "minimum": 1 },
+    "duplicate_of": { "type": ["string", "null"] },
+    "supersedes_document_id": { "type": ["string", "null"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "indexed_at": { "type": ["string", "null"], "format": "date-time" },
+    "deleted_at": { "type": ["string", "null"], "format": "date-time" },
+    "last_error": { "type": ["string", "null"] }
+  }
+}

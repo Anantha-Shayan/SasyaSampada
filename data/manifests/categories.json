@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "id": "crop_production",
+      "label": "Crop Production",
+      "description": "Guides on cultivation practices, varieties, and seasonal operations"
+    },
+    {
+      "id": "government_policy",
+      "label": "Government Policy",
+      "description": "Ministry reports, schemes, and policy documents"
+    },
+    {
+      "id": "farmer_handbook",
+      "label": "Farmer Handbook",
+      "description": "Practical handbooks for basic agriculture"
+    },
+    {
+      "id": "agro_advisory",
+      "label": "Agro Advisory",
+      "description": "Seasonal advisories from research institutions"
+    },
+    {
+      "id": "crop_insurance",
+      "label": "Crop Insurance",
+      "description": "Insurance scheme rules and operational guidelines"
+    },
+    {
+      "id": "natural_farming",
+      "label": "Natural Farming",
+      "description": "Organic and natural farming study materials"
+    }
+  ]
+}

@@ -42,6 +42,7 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 │   │   │   └── v1/endpoints/      # Planned RAG route modules
 │   │   ├── core/                  # Config, logging, DI (planned)
 │   │   ├── domain/schemas/        # Target Pydantic home
+│   │   ├── knowledge_base/        # Catalog & path conventions (Phase 2)
 │   │   ├── ingestion/             # PDF → chunks → vectors
 │   │   ├── embeddings/
 │   │   ├── vector_db/
@@ -66,7 +67,7 @@ SasyaSampada aims to provide a comprehensive AI-driven agricultural advisory sys
 │   ├── metadata/
 │   ├── embeddings/
 │   ├── logs/
-│   ├── manifests/
+│   ├── manifests/                 # Document catalog (source of truth)
 │   └── datasets/
 └── training/
 ```
@@ -83,6 +84,7 @@ Production RAG system design is documented in [`docs/`](docs/README.md). **Phase
 | [04_data_flow](docs/04_data_flow.md) | Write/read data paths |
 | [05_rag_pipeline](docs/05_rag_pipeline.md) | Query-time RAG (planned) |
 | [06_ingestion_pipeline](docs/06_ingestion_pipeline.md) | Ingestion stages (planned) |
+| [Knowledge Base Organization](docs/knowledge_base_organization.md) | Disk layout, versioning, dedup |
 | [16_scalability](docs/16_scalability.md) | Scale-out strategy |
 | [23_engineering_decisions](docs/23_engineering_decisions.md) | ADR log |
 
@@ -127,7 +129,7 @@ python training/train_model.py
 python training/preprocess.py
 ```
 
-Generated model files and mappings are written to `backend/model_assets/`. Raw downloads are placed in `data/raw/`, cleaned outputs in `data/processed/`, and static datasets in `data/datasets/`.
+Generated model files and mappings are written to `backend/model_assets/`. Agricultural PDFs live in `data/raw/` with catalog metadata in `data/manifests/documents.json`. See [`data/README.md`](data/README.md) for the full knowledge-base layout. Tabular ML data remains in `data/datasets/`.
 
 ## Docker
 
