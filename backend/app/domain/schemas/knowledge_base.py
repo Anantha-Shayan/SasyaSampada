@@ -73,13 +73,19 @@ class ChunkRecord(BaseModel):
     page_start: int | None = Field(default=None, ge=1)
     page_end: int | None = Field(default=None, ge=1)
     section_title: str | None = None
+    title: str | None = None
+    organization: str | None = None
+    year: int | None = Field(default=None, ge=1900, le=2100)
     category: str
     language: str
     source: str | None = None
     source_url: str | None = None
     filename: str
     content_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    chunker_name: str | None = None
+    metadata_schema_version: str = "1.0"
     created_at: datetime
+    ingested_at: datetime | None = None
 
 
 class IngestionRunRecord(BaseModel):

@@ -9,7 +9,7 @@ Protocol definitions for each pipeline stage. See `base.py`.
 | `DocumentParser` | `CompositePdfParser` | Phase 4 ✓ |
 | `DocumentCleaner` | `AgriculturalTextCleaner` | Phase 5 ✓ |
 | `DocumentChunker` | `RecursiveCharacterChunker` | Phase 6 ✓ |
-| `MetadataGenerator` | `DefaultMetadataGenerator` | Phase 7 |
+| `MetadataGenerator` | `RichMetadataGenerator` | Phase 7 ✓ |
 | `EmbeddingGenerator` | `StubEmbeddingGenerator` | Phase 8 |
 | `VectorStoreWriter` | `NoOpVectorStoreWriter` | Phase 9 |
 

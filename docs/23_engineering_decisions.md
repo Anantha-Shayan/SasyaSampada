@@ -222,6 +222,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-018: Rich chunk metadata with schema versioning
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 7) |
+| **Context** | Retrieval needs filters, citations, and extensibility |
+| **Decision** | `RichMetadataGenerator` + `ChunkRecord` v1.0 + `document_meta.ext` |
+| **Alternatives** | LLM metadata; embed in chunk text; Qdrant-only |
+| **Why not LLM** | Cost; non-deterministic |
+| **Tradeoffs** | Heuristic page/section; JSONL size |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

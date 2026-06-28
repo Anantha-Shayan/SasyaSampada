@@ -12,7 +12,8 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 4 | PDF Parsing | Complete |
 | 5 | Cleaning | Complete |
 | 6 | Chunking | Complete |
-| 7 | Metadata | Planned |
+| 7 | Metadata | Complete |
+| 8 | Embeddings | Planned |
 
 ## Core Documents
 
@@ -28,6 +29,7 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 07 | [PDF Parsing](07_pdf_parsing.md) | PyMuPDF, pdfplumber, OCR architecture |
 | 08 | [Cleaning](08_cleaning.md) | Text normalization and noise removal |
 | 09 | [Chunking](09_chunking.md) | Recursive character splitting |
+| 10 | [Metadata](10_metadata.md) | Rich chunk metadata and citations |
 | 16 | [Scalability](16_scalability.md) | Horizontal scaling and growth path |
 
 ## Engineering Reference
@@ -38,4 +40,4 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 
 ## Upcoming (Later Phases)
 
-Documents 10–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.
+Documents 11–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.

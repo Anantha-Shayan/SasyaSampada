@@ -5,9 +5,9 @@ from app.config import CHUNK_OVERLAP, CHUNK_SIZE
 from app.ingestion.stages import (
     AgriculturalTextCleaner,
     CompositePdfParser,
-    DefaultMetadataGenerator,
     FileSystemLoader,
     RecursiveCharacterChunker,
+    RichMetadataGenerator,
     NoOpVectorStoreWriter,
     PassthroughCleaner,
     PyMuPDFParser,
@@ -31,7 +31,7 @@ def build_default_pipeline(
             chunk_size=chunk_size or CHUNK_SIZE,
             chunk_overlap=chunk_overlap or CHUNK_OVERLAP,
         ),
-        metadata_generator=DefaultMetadataGenerator(),
+        metadata_generator=RichMetadataGenerator(),
         embedder=StubEmbeddingGenerator(),
         vector_store=NoOpVectorStoreWriter(),
     )
