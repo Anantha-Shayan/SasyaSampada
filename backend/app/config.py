@@ -38,3 +38,9 @@ CORS_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+
+# PDF parsing (Phase 4)
+OCR_ENABLED = os.getenv("OCR_ENABLED", "false").lower() in {"1", "true", "yes"}
+PDF_MIN_TEXT_CHARS = int(os.getenv("PDF_MIN_TEXT_CHARS", "30"))
+PDF_HEADER_FRACTION = float(os.getenv("PDF_HEADER_FRACTION", "0.12"))
+PDF_FOOTER_FRACTION = float(os.getenv("PDF_FOOTER_FRACTION", "0.12"))

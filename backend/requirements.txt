@@ -66,6 +66,7 @@ pydantic_core==2.46.4
 pyflakes==3.4.0
 Pygments==2.20.0
 PyMuPDF==1.27.2.3
+pdfplumber==0.11.6
 pyparsing==3.3.2
 pytest==9.1.1
 pytest-cov==7.1.0

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from app.ingestion.pipeline.runner import IngestionPipeline
 from app.ingestion.stages import (
+    CompositePdfParser,
     DefaultMetadataGenerator,
     FileSystemLoader,
     FixedSizeChunker,
@@ -22,7 +23,7 @@ def build_default_pipeline(
     return IngestionPipeline(
         loader=FileSystemLoader(),
         validator=PdfValidator(),
-        parser=PyMuPDFParser(),
+        parser=CompositePdfParser(),
         cleaner=PassthroughCleaner(),
         chunker=FixedSizeChunker(chunk_size=chunk_size, chunk_overlap=chunk_overlap),
         metadata_generator=DefaultMetadataGenerator(),

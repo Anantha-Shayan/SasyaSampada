@@ -183,6 +183,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-015: Composite PDF parser (PyMuPDF + pdfplumber + optional OCR)
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 4) |
+| **Context** | Agri PDFs need tables, header/footer hints, scanned-page path |
+| **Decision** | `CompositePdfParser` orchestrates PyMuPDF, pdfplumber, `OcrEngine` protocol |
+| **Alternatives** | Unstructured; PyMuPDF-only; Textract |
+| **Why not Unstructured** | Opaque; heavy; weak per-stage testing |
+| **Tradeoffs** | Two PDF libs; optional Tesseract system dep |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

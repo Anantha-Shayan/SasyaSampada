@@ -6,7 +6,7 @@ Protocol definitions for each pipeline stage. See `base.py`.
 |----------|--------------------------|-------------|
 | `DocumentLoader` | `FileSystemLoader` | — |
 | `DocumentValidator` | `PdfValidator` | — |
-| `DocumentParser` | `PyMuPDFParser` | Phase 4 |
+| `DocumentParser` | `CompositePdfParser` | Phase 4 ✓ |
 | `DocumentCleaner` | `PassthroughCleaner` | Phase 5 |
 | `DocumentChunker` | `FixedSizeChunker` | Phase 6 |
 | `MetadataGenerator` | `DefaultMetadataGenerator` | Phase 7 |

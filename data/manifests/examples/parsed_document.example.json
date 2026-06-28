@@ -1,24 +1,51 @@
 {
   "document_id": "tnau_crop_production_guide_2020",
   "document_version": 1,
-  "parser": "pymupdf",
-  "parser_version": "1.27.2",
+  "parser_name": "composite",
+  "parser_version": "1.0.0",
   "parsed_at": "2026-06-27T00:00:00Z",
   "page_count": 2,
+  "scanned_page_count": 0,
+  "table_page_count": 1,
+  "ocr_engine": null,
   "pages": [
     {
       "page_number": 1,
+      "page_type": "text",
       "text": "Example page text extracted from PDF...",
+      "body_text": "Example page text extracted from PDF...",
+      "header_text": "Crop Production Guide",
+      "footer_text": null,
+      "tables": [],
       "has_tables": false,
       "ocr_applied": false,
-      "char_count": 42
+      "needs_ocr": false,
+      "char_count": 42,
+      "text_density": 0.00008,
+      "extraction_methods": ["pymupdf"]
     },
     {
       "page_number": 2,
-      "text": "Second page content...",
+      "page_type": "text",
+      "text": "Second page content...\n\n[TABLE 1]\n| Crop | Season |\n| --- | --- |\n| Rice | Kharif |",
+      "body_text": "Second page content...",
+      "header_text": null,
+      "footer_text": "Page 2",
+      "tables": [
+        {
+          "table_index": 0,
+          "rows": [["Crop", "Season"], ["Rice", "Kharif"]],
+          "markdown": "| Crop | Season |\n| --- | --- |\n| Rice | Kharif |",
+          "row_count": 2,
+          "col_count": 2
+        }
+      ],
       "has_tables": true,
       "ocr_applied": false,
-      "char_count": 22
+      "needs_ocr": false,
+      "char_count": 90,
+      "text_density": 0.00015,
+      "extraction_methods": ["pymupdf", "pdfplumber"]
     }
   ],
   "source_filename": "tnau_crop_production_guide_2020.pdf",

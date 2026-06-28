@@ -9,7 +9,8 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 1 | System Design & Architecture | Complete |
 | 2 | Knowledge Base Organization | Complete |
 | 3 | Ingestion Pipeline | Complete |
-| 4 | PDF Parsing (enhanced) | Planned |
+| 4 | PDF Parsing | Complete |
+| 5 | Cleaning | Planned |
 
 ## Core Documents
 
@@ -22,6 +23,7 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 05 | [RAG Pipeline](05_rag_pipeline.md) | Query-time RAG architecture (planned) |
 | 06 | [Ingestion Pipeline](06_ingestion_pipeline.md) | Modular ingestion pipeline (Phase 3) |
 | — | [Knowledge Base Organization](knowledge_base_organization.md) | Disk layout, versioning, dedup, lifecycle |
+| 07 | [PDF Parsing](07_pdf_parsing.md) | PyMuPDF, pdfplumber, OCR architecture |
 | 16 | [Scalability](16_scalability.md) | Horizontal scaling and growth path |
 
 ## Engineering Reference
@@ -32,4 +34,4 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 
 ## Upcoming (Later Phases)
 
-Documents 07–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.
+Documents 08–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.
