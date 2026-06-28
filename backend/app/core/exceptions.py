@@ -55,3 +55,7 @@ class VectorStoreError(IngestionError):
 
 class RetryableIngestionError(RetryableError, IngestionError):
     """Ingestion stage failed transiently (network, rate limit)."""
+
+
+class RetrievalError(SasyaSampadaError):
+    """Query-time retrieval failed."""

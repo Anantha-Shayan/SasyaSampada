@@ -168,5 +168,5 @@ Walk stage-by-stage with **what each stage consumes and produces**. Mention prog
 
 - Lewis et al., RAG (2020)
 - `app/rag/README.md`
-- `docs/13_retrieval.md` (planned Phase 10)
+- `docs/13_retrieval.md` (Phase 10)
 - `docs/14_prompt_engineering.md` (planned Phase 11)

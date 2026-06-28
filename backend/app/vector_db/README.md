@@ -6,4 +6,4 @@
 |---------|------|
 | `qdrant/` | Qdrant client, collection setup, payload mapping |
 
-Ingestion writes via `QdrantVectorStoreWriter`; retrieval reads via `QdrantVectorStore` (Phase 10).
+Ingestion writes via `QdrantVectorStoreWriter`; retrieval reads via `QdrantVectorStore.search_similar()` (Phase 10).

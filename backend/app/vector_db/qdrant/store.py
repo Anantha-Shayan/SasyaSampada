@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from qdrant_client import QdrantClient
-from qdrant_client.models import FieldCondition, Filter, MatchValue, PointStruct
+from qdrant_client.models import FieldCondition, Filter, MatchValue, PointStruct, ScoredPoint
 
 from app.core.exceptions import RetryableIngestionError, VectorStoreError
 from app.core.logging import get_logger
@@ -114,6 +114,29 @@ class QdrantVectorStore:
             raise VectorStoreError(
                 f"Failed to delete {document_id} v{document_version} from Qdrant",
             ) from exc
+
+    def search_similar(
+        self,
+        query_vector: list[float],
+        *,
+        limit: int = 10,
+        score_threshold: float | None = None,
+        query_filter: Filter | None = None,
+    ) -> list[ScoredPoint]:
+        if not self._client.collection_exists(self.collection_name):
+            return []
+
+        try:
+            return self._client.search(
+                collection_name=self.collection_name,
+                query_vector=query_vector,
+                limit=limit,
+                score_threshold=score_threshold,
+                query_filter=query_filter,
+                with_payload=True,
+            )
+        except Exception as exc:
+            raise VectorStoreError("Qdrant similarity search failed") from exc
 
 
 def _is_retryable_qdrant_error(exc: Exception) -> bool:

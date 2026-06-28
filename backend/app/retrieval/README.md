@@ -2,12 +2,14 @@
 
 Query-time document retrieval. No LLM calls here.
 
-**Planned (Phase 10):**
+| Module | Role |
+|--------|------|
+| `base.py` | `Retriever` protocol |
+| `similarity.py` | `SimilarityRetriever` — top-K cosine + metadata filters |
+| `filters.py` | `RetrievalFilter` → Qdrant `Filter` |
+| `mapping.py` | Qdrant payload → `RetrievedChunk` |
+| `factory.py` | `build_similarity_retriever()` from env |
 
-- `Retriever` protocol
-- `SimilarityRetriever` — top-K cosine search in Qdrant
-- `MMRRetriever` — diversity-aware selection
-- `HybridRetriever` — dense + sparse (future BM25)
-- `Reranker` — cross-encoder hook (future)
+**Planned (later phases):** MMR, hybrid BM25+dense, cross-encoder rerank (Phase 18).
 
-Retrieval returns `RetrievedChunk` objects with scores and metadata for the RAG layer.
+Schemas: `app/domain/schemas/retrieval.py`.

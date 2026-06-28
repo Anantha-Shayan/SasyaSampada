@@ -261,6 +261,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-021: SimilarityRetriever as RAG retrieval baseline
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 10) |
+| **Context** | Need query-time search before LLM generation |
+| **Decision** | `SimilarityRetriever` + top-K cosine + optional `RetrievalFilter` |
+| **Alternatives** | LangChain retriever; MMR-first; inline search in RAG |
+| **Why not LangChain** | Opaque; weak per-stage metrics |
+| **Tradeoffs** | No rerank/MMR yet; simple and fast |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

@@ -155,4 +155,4 @@ ChunkedDocument + DocumentCatalogEntry
 - `backend/app/ingestion/stages/metadata/generator.py`
 - `data/manifests/examples/chunk_record.example.json`
 - `docs/knowledge_base_organization.md`
-- `docs/13_retrieval.md` (planned Phase 10)
+- `docs/13_retrieval.md`

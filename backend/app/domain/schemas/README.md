@@ -8,5 +8,6 @@ Pydantic models grouped by bounded context.
 - `chat.py` — chat request/response
 - `documents.py` — document metadata, chunks
 - `rag.py` — ask/search request/response with citations
+- `retrieval.py` — `RetrievedChunk`, `RetrievalResult`, filters (Phase 10)
 
 Existing `app/models/` remains until Phase 13 refactor to avoid breaking imports.

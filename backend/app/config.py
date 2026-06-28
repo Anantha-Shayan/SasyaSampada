@@ -64,3 +64,7 @@ QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "agri_knowledge")
 QDRANT_UPSERT_BATCH_SIZE = int(os.getenv("QDRANT_UPSERT_BATCH_SIZE", "64"))
+
+# Retrieval (Phase 10)
+RETRIEVAL_TOP_K = int(os.getenv("RETRIEVAL_TOP_K", "10"))
+RETRIEVAL_SCORE_THRESHOLD = float(os.getenv("RETRIEVAL_SCORE_THRESHOLD", "0.0"))
