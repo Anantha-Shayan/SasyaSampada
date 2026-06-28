@@ -1,11 +1,23 @@
 # `app/ingestion/pipeline`
 
-Orchestrates stage execution: ordering, retries, logging, failure handling.
+| Module | Role |
+|--------|------|
+| `context.py` | `IngestionContext`, `IngestionResult`, manifest updates |
+| `runner.py` | `IngestionPipeline` orchestrator |
 
-**Planned (Phase 3):**
+## CLI
 
-- `IngestionPipeline` — runs stages sequentially with typed context object
-- `IngestionResult` — summary (document_id, chunk_count, duration)
-- Stage-level retry via `tenacity` (already in requirements)
+```bash
+cd backend
+python -m app.ingestion.cli ingest --document-id tnau_crop_production_guide_2020
+python -m app.ingestion.cli ingest --all
+```
 
-Pipeline is invoked by CLI script and `/documents/upload` API (Phase 13).
+## Programmatic
+
+```python
+from app.ingestion.factory import build_default_pipeline
+
+pipeline = build_default_pipeline()
+result = pipeline.run("tnau_crop_production_guide_2020")
+```

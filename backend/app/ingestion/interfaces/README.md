@@ -1,16 +1,16 @@
 # `app/ingestion/interfaces`
 
-Abstract base classes (Protocols) for each pipeline stage.
+Protocol definitions for each pipeline stage. See `base.py`.
 
-**Planned interfaces (Phase 3):**
+| Protocol | Implementation (Phase 3) | Enhanced in |
+|----------|--------------------------|-------------|
+| `DocumentLoader` | `FileSystemLoader` | — |
+| `DocumentValidator` | `PdfValidator` | — |
+| `DocumentParser` | `PyMuPDFParser` | Phase 4 |
+| `DocumentCleaner` | `PassthroughCleaner` | Phase 5 |
+| `DocumentChunker` | `FixedSizeChunker` | Phase 6 |
+| `MetadataGenerator` | `DefaultMetadataGenerator` | Phase 7 |
+| `EmbeddingGenerator` | `StubEmbeddingGenerator` | Phase 8 |
+| `VectorStoreWriter` | `NoOpVectorStoreWriter` | Phase 9 |
 
-- `DocumentLoader` — resolve raw bytes/path from storage
-- `DocumentValidator` — schema, size, MIME checks
-- `DocumentParser` — PDF → structured pages
-- `DocumentCleaner` — normalize text
-- `DocumentChunker` — split into retrieval units
-- `MetadataGenerator` — attach rich metadata
-- `EmbeddingGenerator` — vectorize chunks
-- `VectorStoreWriter` — upsert to Qdrant
-
-Each interface has a single responsibility. Implementations are swappable via DI.
+Swapping a stage = inject a different implementation via `IngestionPipeline(...)` or `build_default_pipeline()`.

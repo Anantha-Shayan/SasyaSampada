@@ -170,6 +170,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-014: IngestionPipeline orchestrator with Protocol-based stages
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 3) |
+| **Context** | Need testable, swappable ingestion before Qdrant/embeddings exist |
+| **Decision** | `IngestionPipeline` + eight Protocols + stub embed/vector stages |
+| **Alternatives** | LangChain loaders; monolithic function |
+| **Why not** | Opaque chains; cannot defend per-stage in interview |
+| **Tradeoffs** | More modules; clear extension points for Phases 4–9 |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

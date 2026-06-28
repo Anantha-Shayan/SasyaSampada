@@ -147,6 +147,16 @@ cd backend
 pytest
 ```
 
+## Ingestion CLI
+
+```bash
+cd backend
+python -m app.ingestion.cli ingest --document-id tnau_crop_production_guide_2020
+python -m app.ingestion.cli ingest --all
+```
+
+Requires PDFs in `data/raw/` matching `data/manifests/documents.json`. See [`docs/06_ingestion_pipeline.md`](docs/06_ingestion_pipeline.md).
+
 ---
 
 

@@ -1,165 +1,222 @@
-# 06 — Ingestion Pipeline (Architecture)
+# 06 — Ingestion Pipeline
 
 ## 1. Purpose
 
-Define the **offline write path** that transforms PDFs into searchable vectors. Blueprint for `app/ingestion/` (Phases 3–9).
+Document the **implemented** modular ingestion pipeline (`app/ingestion/`) that transforms cataloged PDFs into chunked metadata ready for embedding and vector indexing.
 
 ## 2. Problem Being Solved
 
-Agricultural PDFs are long, noisy (headers, page numbers, tables), and heterogeneous (text vs. scanned). A single monolithic script cannot be retried, tested, or swapped per stage.
+Monolithic ingest scripts cannot be retried per stage, swapped for A/B tests (parser v1 vs v2), or unit-tested without running the full PDF→Qdrant path. Production pipelines need isolated stages with typed contracts.
 
 ## 3. Engineering Decision
 
-**Independent stages** connected by a thin orchestrator (`IngestionPipeline`), each implementing a Protocol in `ingestion/interfaces/`:
+**`IngestionPipeline` orchestrator** wires eight independent stages via Protocol interfaces:
 
 ```
-Loader → Validation → Parser → Cleaner → Chunker → Metadata → Embedding → Vector DB
+Loader → Validator → Parser → Cleaner → Chunker → Metadata → Embedder → VectorStore
 ```
 
 Each stage:
-- Accepts a typed input DTO
-- Returns a typed output DTO
-- Logs start/end/duration
-- Retries transient failures (`tenacity`)
-- Raises domain exceptions (`core.exceptions`)
+- Implements a Protocol in `ingestion/interfaces/base.py`
+- Lives in `ingestion/stages/<name>.py`
+- Logs via `core.logging` + per-run JSONL in `data/logs/`
+- Raises typed exceptions from `core.exceptions`
+- Embedder and vector store use `tenacity` retry (`ingestion/retry.py`)
+
+**Phase 3 scope:** full pipeline wiring with **stub embedder** and **no-op vector store**. Parser/cleaner/chunker are minimal implementations enhanced in Phases 4–6.
 
 ## 4. Alternatives Considered
 
-| Alternative | Issue |
-|-------------|-------|
-| One `ingest_pdf()` function | Cannot unit test chunker without parsing |
-| Airflow/Prefect DAG on day one | Ops overhead for 6 PDFs |
-| LlamaIndex `SimpleDirectoryReader` | Black-box parsing; weak PDF table handling |
-| Celery task per stage | Good at scale; defer to Phase 18 |
+| Alternative | Verdict |
+|-------------|---------|
+| LangChain `DocumentLoader` chain | Black box; weak interview narrative |
+| Single `ingest_pdf()` | No replay matrix |
+| Prefect/Airflow now | Deferred to Phase 18 |
+| Synchronous API ingest | Blocks workers; CLI first |
 
 ## 5. Why Alternative Was Not Selected
 
-Stage separation matches **ETL best practices** and interview expectations: "How would you re-run embedding without re-parsing?" → run stages 7–8 only from disk artifacts.
+Explicit stages match ETL best practices, enable **mock-based pipeline tests**, and allow ops to re-run from any artifact checkpoint (see replay matrix below).
 
 ## 6. Tradeoffs
 
-| Advantage | Cost |
-|-----------|------|
-| Stage-level unit tests | Serialization between stages |
-| Partial pipeline replay | More files on disk |
-| Team parallelization (parser vs. embed) | Interface design upfront |
+| Gain | Cost |
+|------|------|
+| Swappable stages via DI | More files than one script |
+| Manifest status tracking | Extra disk writes per stage |
+| Stub embed/vector unblocks pipeline test | Not production retrieval until Phases 8–9 |
 
 ## 7. Performance Implications
 
-- Parser is CPU-bound (PyMuPDF) — dominant for large PDFs
-- Embedding batched (32–64 chunks) for GPU utilization
-- Qdrant upsert batched (100–500 points)
+| Stage | Implementation | Dominant cost |
+|-------|----------------|---------------|
+| Loader | Read file + SHA-256 | Disk I/O |
+| Validator | 8-byte header check | Negligible |
+| Parser | PyMuPDF `get_text()` | CPU, scales with pages |
+| Cleaner | String join | Negligible |
+| Chunker | Fixed window | O(n) text |
+| Metadata | JSONL write | Disk I/O |
+| Embedder (stub) | Zero vectors | Negligible |
+| Vector store (noop) | Log only | Negligible |
 
 ## 8. Scaling Considerations
 
-- Async ingestion queue when upload rate exceeds single-worker throughput
-- Horizontal workers with document-level locking via `document_id`
-- OCR stage optional branch for scanned pages only
+- Pipeline is **CLI-invoked** today; Phase 13 adds API + background task; Phase 18 adds queue workers
+- Per-document `run_id` enables parallel workers with document-level locking
+- Stage artifacts on disk allow horizontal workers sharing NFS/S3
 
 ## 9. Production Considerations
 
-- Idempotent runs: same `document_id` + `content_hash` skips unchanged work
-- Dead letter: manifest `status=failed` + `data/logs/` stack trace
-- CLI: `python -m app.ingestion.cli ingest --document-id X` for ops
+- Manifest `ingestion_status` updated after each stage group
+- Failed runs set `last_error` and append to `ingestion_registry.json`
+- Duplicate documents (`duplicate_of`) short-circuit before loader
+- Deleted documents (`lifecycle_status=deleted`) rejected
+
+### Module map
+
+| Path | Responsibility |
+|------|----------------|
+| `ingestion/interfaces/base.py` | Protocol definitions |
+| `ingestion/stages/*.py` | Stage implementations |
+| `ingestion/pipeline/runner.py` | `IngestionPipeline` |
+| `ingestion/pipeline/context.py` | Context, result, manifest helpers |
+| `ingestion/factory.py` | `build_default_pipeline()` |
+| `ingestion/cli.py` | CLI entry point |
+| `domain/schemas/ingestion.py` | Stage DTOs |
+| `core/exceptions.py` | `IngestionError` hierarchy |
+| `core/logging.py` | `IngestionLogWriter` |
+
+### CLI
+
+```bash
+cd backend
+python -m app.ingestion.cli ingest --document-id tnau_crop_production_guide_2020
+python -m app.ingestion.cli ingest --all
+```
 
 ## 10. Failure Cases
 
-| Stage | Failure | Action |
-|-------|---------|--------|
-| Validation | Not a PDF / too large | Reject; no partial writes |
-| Parser | Encrypted PDF | Log; mark failed |
-| Embed | OOM | Reduce batch size; retry |
-| Qdrant | Connection refused | Retry 3x; exponential backoff |
+| Stage | Exception | Retry? |
+|-------|-----------|--------|
+| Loader | `LoaderError` | No |
+| Validator | `NonRetryableError` | No |
+| Parser | `ParserError` / `NonRetryableError` | No |
+| Cleaner | `CleanerError` | No |
+| Chunker | `ChunkerError` | No |
+| Metadata | `MetadataError` | No |
+| Embedder | `RetryableIngestionError` | Yes (Phase 8) |
+| Vector store | `RetryableIngestionError` | Yes (Phase 9) |
 
 ## 11. Edge Cases
 
-- Zero-text page (image only) → OCR branch flag in parsed JSON
-- Table extracted as gibberish → pdfplumber table path (Phase 4)
-- Empty document after clean → fail before embed
+| Case | Behavior |
+|------|----------|
+| Missing raw PDF | `LoaderError`, manifest `failed` |
+| PDF with no text | `NonRetryableError` at parser (OCR in Phase 4) |
+| Duplicate catalog entry | Rejected before pipeline starts |
+| Empty chunk list | `NonRetryableError` at chunker |
 
 ## 12. Security Concerns
 
-- Validate magic bytes `%PDF` not just extension
-- Sandboxed parsing — no `eval` on PDF metadata
-- Path traversal prevention on uploaded filenames
+- Validator checks `%PDF` magic bytes
+- Filename must match manifest (path traversal prevention)
+- 100 MB size cap in `PdfValidator`
+- Logs exclude API keys and full chunk bodies in error paths
 
 ## 13. Cost Considerations
 
-- Re-embed only when `EMBEDDING_MODEL` changes — reuse parsed/cleaned artifacts
-- Local embedding avoids per-token API fees for 10⁵+ chunks at scale
+- Stub embedder avoids API cost during pipeline development
+- Re-running pipeline reuses nothing until checkpoint resume (future); currently full re-run
+- Incremental ingest via `content_sha256` at catalog level (Phase 2) — loader populates hash
 
 ## 14. Common Interview Questions
 
-**Q: Why separate ingestion from the API?**  
-A: Different scaling profile, long-running work, retry semantics, and keeps request workers responsive.
+**Q: Why separate ingestion stages?**  
+A: Single responsibility, isolated testing, different retry policies, replay from disk artifacts without re-parsing.
 
-**Q: What is the ingestion input/output?**  
-A: Input: PDF path + manifest entry. Output: N points in Qdrant + metadata JSONL on disk.
+**Q: How do you swap the embedding model?**  
+A: Inject a different `EmbeddingGenerator` implementation into `IngestionPipeline`; re-run from metadata stage.
+
+**Q: What happens on failure?**  
+A: Manifest `ingestion_status=failed`, `last_error` set, JSONL log records last completed stage, registry append.
 
 ## 15. Deep Interview Questions
 
-**Q: How do you incrementally ingest new documents?**  
-A: Add manifest entry → run pipeline for that `document_id` only → upsert new points without touching others.
+**Q: How would you resume a failed run?**  
+A: Read `stages_completed` from run log; add `start_from_stage` parameter to pipeline (future); load cached artifact from versioned path.
 
-**Q: How do you update an existing document?**  
-A: Bump version → delete points with old `document_id`+`version` filter → full pipeline re-run.
+**Q: Why retry only embedder and vector store?**  
+A: Network/rate-limit failures are transient; parse/validate failures are deterministic.
+
+**Q: How test without PDFs?**  
+A: Mock all stage protocols; see `tests/unit/test_ingestion_pipeline.py`.
 
 ## 16. Best Possible Answers
 
-Explain **why pipelines are separated**: single responsibility, isolated testing, replay from checkpoints, different retry policies per stage (network for Qdrant, CPU for parse).
+Walk the eight stages naming **input DTO → output DTO** and which file persists artifacts. Mention stub vs production implementations.
 
 ## 17. Diagrams
 
-### Stage chain
+### Implemented stage chain
 
 ```
-┌────────┐   ┌────────────┐   ┌────────┐   ┌─────────┐
-│ Loader │──▶│ Validation │──▶│ Parser │──▶│ Cleaner │
-└────────┘   └────────────┘   └────────┘   └────┬────┘
-                                                  │
-    ┌─────────┐   ┌──────────┐   ┌───────────┐     │
-    │ Qdrant  │◀──│ Embedding│◀──│ Metadata  │◀────┤
-    │ Upsert  │   │ Generator│   │ Generator │◀───┤
-    └─────────┘   └──────────┘   └───────────┘     │
-                                          ┌─────────┴────────┐
-                                          │    Chunker     │
-                                          └────────────────┘
+DocumentCatalogEntry (manifest)
+        │
+        ▼
+┌─────────────────┐
+│ FileSystemLoader │ → LoadedDocument
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  PdfValidator   │ → ValidatedDocument
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  PyMuPDFParser  │ → ParsedDocumentArtifact → data/parsed/.../parsed.json
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│PassthroughCleaner│ → CleanedDocument → data/processed/.../cleaned.txt
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ FixedSizeChunker │ → ChunkedDocument
+└────────┬────────┘
+         ▼
+┌──────────────────────┐
+│DefaultMetadataGenerator│ → MetadataBundle → data/metadata/.../chunks.jsonl
+└────────┬─────────────┘
+         ▼
+┌──────────────────────┐
+│StubEmbeddingGenerator │ → EmbeddedDocument (stub vectors)
+└────────┬─────────────┘
+         ▼
+┌──────────────────────┐
+│NoOpVectorStoreWriter │ → IndexedDocument (log only until Phase 9)
+└──────────────────────┘
 ```
 
-### Retrieval flow (read path summary)
+### Replay matrix
 
-Ingestion **writes** the index that retrieval **reads**:
+| Change | Re-run from stage |
+|--------|-------------------|
+| New embedding model | Embedder |
+| Chunk size change | Chunker |
+| Parser upgrade | Parser |
+| New PDF | Loader (full pipeline) |
 
-```
-Ingestion:  chunk text ──embed──▶ vector ──upsert──▶ Qdrant
-Retrieval:  query ──embed──▶ vector ──search──▶ top-K chunks
-```
+### Why pipelines are separated
 
-See `docs/04_data_flow.md` for full read/write diagrams.
-
-### Stage interfaces (planned)
-
-```python
-# Conceptual — implementation Phase 3
-class DocumentParser(Protocol):
-    def parse(self, source: ValidatedDocument) -> ParsedDocument: ...
-
-class DocumentChunker(Protocol):
-    def chunk(self, doc: CleanDocument) -> list[Chunk]: ...
-```
-
-### Why separation matters — replay matrix
-
-| Change | Re-run from |
-|--------|-------------|
-| New embedding model | Embedding → Qdrant |
-| Chunk size tweak | Chunker → end |
-| Parser bug fix | Parser → end |
-| New PDF | Full pipeline |
+1. **Testability** — mock one Protocol, test orchestrator
+2. **Observability** — per-stage timing in JSONL logs
+3. **Cost control** — skip embed when testing parse/clean
+4. **Team velocity** — parser and infra engineers work in parallel
+5. **Failure isolation** — know exactly which stage failed
 
 ## 18. References
 
-- `app/ingestion/interfaces/README.md`
-- `app/ingestion/stages/README.md`
-- `backend/app/models/schemas.py` (DTO seeds)
-- `app/ingestion/parser.py` (temporary scratch — replace Phase 4)
+- `backend/app/ingestion/pipeline/runner.py`
+- `backend/app/ingestion/factory.py`
+- `backend/app/domain/schemas/ingestion.py`
+- `docs/knowledge_base_organization.md`
+- `docs/23_engineering_decisions.md` (ADR-014)
