@@ -44,3 +44,7 @@ OCR_ENABLED = os.getenv("OCR_ENABLED", "false").lower() in {"1", "true", "yes"}
 PDF_MIN_TEXT_CHARS = int(os.getenv("PDF_MIN_TEXT_CHARS", "30"))
 PDF_HEADER_FRACTION = float(os.getenv("PDF_HEADER_FRACTION", "0.12"))
 PDF_FOOTER_FRACTION = float(os.getenv("PDF_FOOTER_FRACTION", "0.12"))
+
+# Chunking (Phase 6)
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1000"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))

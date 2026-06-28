@@ -1,5 +1,5 @@
-from app.ingestion.stages.chunker import FixedSizeChunker
-from app.ingestion.stages.cleaner import PassthroughCleaner
+from app.ingestion.stages.chunker import FixedSizeChunker, RecursiveCharacterChunker
+from app.ingestion.stages.cleaner import AgriculturalTextCleaner, PassthroughCleaner
 from app.ingestion.stages.embedding import StubEmbeddingGenerator
 from app.ingestion.stages.loader import FileSystemLoader
 from app.ingestion.stages.metadata import DefaultMetadataGenerator
@@ -12,7 +12,9 @@ __all__ = [
     "PdfValidator",
     "CompositePdfParser",
     "PyMuPDFParser",
+    "AgriculturalTextCleaner",
     "PassthroughCleaner",
+    "RecursiveCharacterChunker",
     "FixedSizeChunker",
     "DefaultMetadataGenerator",
     "StubEmbeddingGenerator",

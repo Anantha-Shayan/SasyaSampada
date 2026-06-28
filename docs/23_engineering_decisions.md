@@ -196,6 +196,32 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-016: Deterministic agricultural text cleaner
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 5) |
+| **Context** | Parser output contains layout noise hurting retrieval |
+| **Decision** | `AgriculturalTextCleaner` with regex + NFKC rules in `text_utils.py` |
+| **Alternatives** | LLM clean; clean-in-parser; ftfy |
+| **Why not LLM** | Non-deterministic; cost; hallucination |
+| **Tradeoffs** | Heuristic tuning; fast and offline |
+
+---
+
+## ADR-017: Recursive character chunking (1000/200)
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 6) |
+| **Context** | Fixed chunker splits mid-sentence; need boundary-aware baseline |
+| **Decision** | `RecursiveCharacterChunker` with separator hierarchy; native impl matching LangChain |
+| **Alternatives** | Fixed; semantic; parent-child; agentic |
+| **Why not semantic** | 10× ingest embed cost for MVP corpus |
+| **Tradeoffs** | Not semantically optimal; tunable; offline |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

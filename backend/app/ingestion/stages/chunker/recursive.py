@@ -3,17 +3,19 @@ from __future__ import annotations
 from app.core.exceptions import ChunkerError, NonRetryableError
 from app.core.logging import get_logger
 from app.domain.schemas.ingestion import ChunkedDocument, CleanedDocument, TextChunk
+from app.ingestion.stages.chunker.splitters import recursive_character_split
 
 logger = get_logger(__name__)
 
-CHUNKER_NAME = "fixed_size"
+CHUNKER_NAME = "recursive_character"
 
 
-class FixedSizeChunker:
+class RecursiveCharacterChunker:
     """
-    Simple fixed-size character chunker with overlap.
+    Recursive character text splitter — respects paragraph, line, and sentence boundaries.
 
-    Replaced by RecursiveCharacterTextSplitter in Phase 6.
+    Same algorithm as LangChain RecursiveCharacterTextSplitter; implemented natively
+    to keep the chunker testable without framework coupling.
     """
 
     stage_name = "chunker"
@@ -25,10 +27,24 @@ class FixedSizeChunker:
         self.chunk_overlap = chunk_overlap
 
     def chunk(self, document: CleanedDocument) -> ChunkedDocument:
-        logger.info("Chunking %s", document.document_id)
+        logger.info(
+            "Chunking %s with %s (size=%d overlap=%d)",
+            document.document_id,
+            CHUNKER_NAME,
+            self.chunk_size,
+            self.chunk_overlap,
+        )
 
         try:
-            chunks = self._split_text(document.text)
+            pieces = recursive_character_split(
+                document.text,
+                chunk_size=self.chunk_size,
+                chunk_overlap=self.chunk_overlap,
+            )
+            chunks = [
+                TextChunk(chunk_index=index, text=piece)
+                for index, piece in enumerate(pieces)
+            ]
         except Exception as exc:
             raise ChunkerError(
                 f"Failed to chunk document {document.document_id}",
@@ -38,29 +54,13 @@ class FixedSizeChunker:
         if not chunks:
             raise NonRetryableError(f"No chunks produced for {document.document_id}")
 
+        logger.info("Produced %d chunks for %s", len(chunks), document.document_id)
+
         return ChunkedDocument(
             document_id=document.document_id,
             document_version=document.document_version,
             chunks=chunks,
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
+            chunker_name=CHUNKER_NAME,
         )
-
-    def _split_text(self, text: str) -> list[TextChunk]:
-        chunks: list[TextChunk] = []
-        start = 0
-        index = 0
-        text_len = len(text)
-        step = self.chunk_size - self.chunk_overlap
-
-        while start < text_len:
-            end = min(start + self.chunk_size, text_len)
-            chunk_text = text[start:end].strip()
-            if chunk_text:
-                chunks.append(TextChunk(chunk_index=index, text=chunk_text))
-                index += 1
-            if end >= text_len:
-                break
-            start += step
-
-        return chunks

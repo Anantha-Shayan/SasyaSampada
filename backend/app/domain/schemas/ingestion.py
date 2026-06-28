@@ -88,6 +88,7 @@ class ChunkedDocument(BaseModel):
     chunks: list[TextChunk]
     chunk_size: int
     chunk_overlap: int
+    chunker_name: str = "recursive_character"
 
 
 class MetadataBundle(BaseModel):
