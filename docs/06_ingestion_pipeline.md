@@ -193,7 +193,7 @@ DocumentCatalogEntry (manifest)
 └────────┬─────────────┘
          ▼
 ┌──────────────────────┐
-│NoOpVectorStoreWriter │ → IndexedDocument (log only until Phase 9)
+│QdrantVectorStoreWriter│ → IndexedDocument → Qdrant `agri_knowledge`
 └──────────────────────┘
 ```
 

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from app.ingestion.stages.metadata import DefaultMetadataGenerator, RichMetadataGenerator
     from app.ingestion.stages.parser import CompositePdfParser, PyMuPDFParser
     from app.ingestion.stages.validator import PdfValidator
-    from app.ingestion.stages.vector_store import NoOpVectorStoreWriter
+    from app.ingestion.stages.vector_store import NoOpVectorStoreWriter, QdrantVectorStoreWriter
 
 __all__ = [
     "FileSystemLoader",
@@ -27,6 +27,7 @@ __all__ = [
     "RichMetadataGenerator",
     "HuggingFaceEmbeddingGenerator",
     "StubEmbeddingGenerator",
+    "QdrantVectorStoreWriter",
     "NoOpVectorStoreWriter",
 ]
 
@@ -52,6 +53,10 @@ _LAZY_EXPORTS: dict[str, tuple[str, str]] = {
         "HuggingFaceEmbeddingGenerator",
     ),
     "StubEmbeddingGenerator": ("app.ingestion.stages.embedding", "StubEmbeddingGenerator"),
+    "QdrantVectorStoreWriter": (
+        "app.ingestion.stages.vector_store",
+        "QdrantVectorStoreWriter",
+    ),
     "NoOpVectorStoreWriter": (
         "app.ingestion.stages.vector_store",
         "NoOpVectorStoreWriter",

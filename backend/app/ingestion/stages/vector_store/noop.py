@@ -14,7 +14,7 @@ class NoOpVectorStoreWriter:
     """
     Placeholder vector store writer — logs upsert intent without Qdrant.
 
-    Replaced by Qdrant client in Phase 9.
+    Retained for pipeline tests and offline ingest without a running Qdrant instance.
     """
 
     stage_name = "vector_store"

@@ -9,6 +9,7 @@ from app.ingestion.stages import (
     HuggingFaceEmbeddingGenerator,
     RecursiveCharacterChunker,
     RichMetadataGenerator,
+    QdrantVectorStoreWriter,
     NoOpVectorStoreWriter,
     PassthroughCleaner,
     PyMuPDFParser,
@@ -21,7 +22,7 @@ def build_default_pipeline(
     chunk_size: int | None = None,
     chunk_overlap: int | None = None,
 ) -> IngestionPipeline:
-    """Construct the default ingestion pipeline with BGE embedder and no-op vector store."""
+    """Construct the default ingestion pipeline with BGE embedder and Qdrant indexer."""
     return IngestionPipeline(
         loader=FileSystemLoader(),
         validator=PdfValidator(),
@@ -33,5 +34,5 @@ def build_default_pipeline(
         ),
         metadata_generator=RichMetadataGenerator(),
         embedder=HuggingFaceEmbeddingGenerator(),
-        vector_store=NoOpVectorStoreWriter(),
+        vector_store=QdrantVectorStoreWriter(),
     )

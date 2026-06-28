@@ -11,6 +11,6 @@ Protocol definitions for each pipeline stage. See `base.py`.
 | `DocumentChunker` | `RecursiveCharacterChunker` | Phase 6 ✓ |
 | `MetadataGenerator` | `RichMetadataGenerator` | Phase 7 ✓ |
 | `EmbeddingGenerator` | `HuggingFaceEmbeddingGenerator` | Phase 8 ✓ |
-| `VectorStoreWriter` | `NoOpVectorStoreWriter` | Phase 9 |
+| `VectorStoreWriter` | `QdrantVectorStoreWriter` | Phase 9 ✓ |
 
 Swapping a stage = inject a different implementation via `IngestionPipeline(...)` or `build_default_pipeline()`.

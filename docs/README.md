@@ -14,7 +14,8 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 6 | Chunking | Complete |
 | 7 | Metadata | Complete |
 | 8 | Embeddings | Complete |
-| 9 | Vector DB (Qdrant) | Planned |
+| 9 | Vector DB (Qdrant) | Complete |
+| 10 | Retrieval | Planned |
 
 ## Core Documents
 
@@ -32,6 +33,7 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 | 09 | [Chunking](09_chunking.md) | Recursive character splitting |
 | 10 | [Metadata](10_metadata.md) | Rich chunk metadata and citations |
 | 11 | [Embeddings](11_embeddings.md) | BGE models via sentence-transformers |
+| 12 | [Vector DB](12_vector_db.md) | Qdrant indexing and payload filters |
 | 16 | [Scalability](16_scalability.md) | Horizontal scaling and growth path |
 
 ## Engineering Reference
@@ -42,4 +44,4 @@ Production-grade Retrieval Augmented Generation (RAG) documentation for the Sasy
 
 ## Upcoming (Later Phases)
 
-Documents 12–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.
+Documents 13–15, 17–22, 24–25, and `interview_master_guide.md` will be added as their corresponding implementation phases complete.

@@ -248,6 +248,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-020: Qdrant upsert with stable point IDs
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 9) |
+| **Context** | Need queryable vectors with metadata filters |
+| **Decision** | `QdrantVectorStore` + UUID5 point IDs + delete-before-upsert per document version |
+| **Alternatives** | FAISS; upsert-only; integer hash IDs |
+| **Why not FAISS** | No payload filters; single-process |
+| **Tradeoffs** | Qdrant ops; `wait=True` latency |
+
+---
+
 ## Template for future ADRs
 
 ```markdown
