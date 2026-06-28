@@ -13,7 +13,7 @@ class StubEmbeddingGenerator:
     """
     Placeholder embedding stage — produces zero vectors of correct dimension.
 
-    Replaced by HuggingFace provider in Phase 8.
+    Retained for pipeline tests and environments without sentence-transformers.
     """
 
     stage_name = "embedder"

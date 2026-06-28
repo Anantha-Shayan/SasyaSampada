@@ -1,9 +1,9 @@
 # `app/embeddings/providers`
 
-Concrete embedding backends:
+| Provider | Status |
+|----------|--------|
+| `HuggingFaceEmbeddingProvider` | Phase 8 ✓ — `sentence-transformers`, BGE models |
+| `OpenAIEmbeddingProvider` | Planned — cloud fallback |
+| `CachedEmbeddingProvider` | Planned — dedup decorator |
 
-- `HuggingFaceEmbeddingProvider` — local inference via `sentence-transformers`
-- `OpenAIEmbeddingProvider` — optional cloud fallback
-- `CachedEmbeddingProvider` — decorator for dedup/cache (future)
-
-Batch size and rate limits configured in `core.config`.
+Configured via `EMBEDDING_MODEL`, `EMBEDDING_DEVICE`, `EMBEDDING_BATCH_SIZE` in `app/config.py`.

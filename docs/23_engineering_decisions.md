@@ -235,6 +235,19 @@ Architecture Decision Records for SasyaSampada RAG. Phase 1 entries only; later 
 
 ---
 
+## ADR-019: Local BGE embeddings with disk cache
+
+| Field | Content |
+|-------|---------|
+| **Status** | Accepted (Phase 8) |
+| **Context** | Stub vectors block retrieval; need production embedder |
+| **Decision** | `HuggingFaceEmbeddingProvider` + `HuggingFaceEmbeddingGenerator`; default `bge-small-en-v1.5`; L2 normalize; JSONL cache |
+| **Alternatives** | OpenAI embed API; no disk cache; skip normalization |
+| **Why not API** | Cost; offline ingest; 6-doc corpus |
+| **Tradeoffs** | Model download size; CPU latency |
+
+---
+
 ## Template for future ADRs
 
 ```markdown

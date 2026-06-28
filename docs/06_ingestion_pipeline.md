@@ -188,7 +188,8 @@ DocumentCatalogEntry (manifest)
 └────────┬─────────────┘
          ▼
 ┌──────────────────────┐
-│StubEmbeddingGenerator │ → EmbeddedDocument (stub vectors)
+│HuggingFaceEmbedding  │ → EmbeddedDocument → data/embeddings/.../vectors.jsonl
+│     Generator        │
 └────────┬─────────────┘
          ▼
 ┌──────────────────────┐

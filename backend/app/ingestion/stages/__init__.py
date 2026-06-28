@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.ingestion.stages.chunker import FixedSizeChunker, RecursiveCharacterChunker
     from app.ingestion.stages.cleaner import AgriculturalTextCleaner, PassthroughCleaner
-    from app.ingestion.stages.embedding import StubEmbeddingGenerator
+    from app.ingestion.stages.embedding import HuggingFaceEmbeddingGenerator, StubEmbeddingGenerator
     from app.ingestion.stages.loader import FileSystemLoader
     from app.ingestion.stages.metadata import DefaultMetadataGenerator, RichMetadataGenerator
     from app.ingestion.stages.parser import CompositePdfParser, PyMuPDFParser
@@ -25,6 +25,7 @@ __all__ = [
     "FixedSizeChunker",
     "DefaultMetadataGenerator",
     "RichMetadataGenerator",
+    "HuggingFaceEmbeddingGenerator",
     "StubEmbeddingGenerator",
     "NoOpVectorStoreWriter",
 ]
@@ -46,6 +47,10 @@ _LAZY_EXPORTS: dict[str, tuple[str, str]] = {
         "DefaultMetadataGenerator",
     ),
     "RichMetadataGenerator": ("app.ingestion.stages.metadata", "RichMetadataGenerator"),
+    "HuggingFaceEmbeddingGenerator": (
+        "app.ingestion.stages.embedding",
+        "HuggingFaceEmbeddingGenerator",
+    ),
     "StubEmbeddingGenerator": ("app.ingestion.stages.embedding", "StubEmbeddingGenerator"),
     "NoOpVectorStoreWriter": (
         "app.ingestion.stages.vector_store",

@@ -1,1 +1,4 @@
-"""Embedding model abstraction (bge-m3 / bge-small-en-v1.5 default)."""
+from app.embeddings.base import EmbeddingProvider
+from app.embeddings.providers import HuggingFaceEmbeddingProvider
+
+__all__ = ["EmbeddingProvider", "HuggingFaceEmbeddingProvider"]

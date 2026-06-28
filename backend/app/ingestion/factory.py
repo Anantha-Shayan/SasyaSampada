@@ -6,13 +6,13 @@ from app.ingestion.stages import (
     AgriculturalTextCleaner,
     CompositePdfParser,
     FileSystemLoader,
+    HuggingFaceEmbeddingGenerator,
     RecursiveCharacterChunker,
     RichMetadataGenerator,
     NoOpVectorStoreWriter,
     PassthroughCleaner,
     PyMuPDFParser,
     PdfValidator,
-    StubEmbeddingGenerator,
 )
 
 
@@ -21,7 +21,7 @@ def build_default_pipeline(
     chunk_size: int | None = None,
     chunk_overlap: int | None = None,
 ) -> IngestionPipeline:
-    """Construct the default ingestion pipeline with stub embedder and vector store."""
+    """Construct the default ingestion pipeline with BGE embedder and no-op vector store."""
     return IngestionPipeline(
         loader=FileSystemLoader(),
         validator=PdfValidator(),
@@ -32,6 +32,6 @@ def build_default_pipeline(
             chunk_overlap=chunk_overlap or CHUNK_OVERLAP,
         ),
         metadata_generator=RichMetadataGenerator(),
-        embedder=StubEmbeddingGenerator(),
+        embedder=HuggingFaceEmbeddingGenerator(),
         vector_store=NoOpVectorStoreWriter(),
     )
