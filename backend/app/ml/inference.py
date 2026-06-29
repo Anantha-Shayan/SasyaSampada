@@ -7,22 +7,30 @@ from app.models.schemas import LocationData, SoilData
 
 ML_MODELS = {}
 ML_AVAILABLE = False
+_ML_LOAD_ATTEMPTED = False
 
-try:
-    ML_MODELS["model"] = joblib.load(MODEL_ASSETS_DIR / "cr_model.pkl")
-    ML_MODELS["scaler"] = joblib.load(MODEL_ASSETS_DIR / "cr_scaler.pkl")
-    ML_MODELS["encoder"] = joblib.load(MODEL_ASSETS_DIR / "cr_encoder.pkl")
 
-    with (MODEL_ASSETS_DIR / "district_crop_map.json").open("r", encoding="utf-8") as file:
-        ML_MODELS["district_crop_map"] = json.load(file)
+def _ensure_ml_loaded() -> bool:
+    global ML_AVAILABLE, _ML_LOAD_ATTEMPTED
+    if _ML_LOAD_ATTEMPTED:
+        return ML_AVAILABLE
+    _ML_LOAD_ATTEMPTED = True
+    try:
+        ML_MODELS["model"] = joblib.load(MODEL_ASSETS_DIR / "cr_model.pkl")
+        ML_MODELS["scaler"] = joblib.load(MODEL_ASSETS_DIR / "cr_scaler.pkl")
+        ML_MODELS["encoder"] = joblib.load(MODEL_ASSETS_DIR / "cr_encoder.pkl")
 
-    with (MODEL_ASSETS_DIR / "crop_district_map.json").open("r", encoding="utf-8") as file:
-        ML_MODELS["crop_district_map"] = json.load(file)
+        with (MODEL_ASSETS_DIR / "district_crop_map.json").open("r", encoding="utf-8") as file:
+            ML_MODELS["district_crop_map"] = json.load(file)
 
-    ML_AVAILABLE = True
-except Exception as exc:
-    print(f"⚠️ ML models not available: {exc}")
-    ML_AVAILABLE = False
+        with (MODEL_ASSETS_DIR / "crop_district_map.json").open("r", encoding="utf-8") as file:
+            ML_MODELS["crop_district_map"] = json.load(file)
+
+        ML_AVAILABLE = True
+    except Exception as exc:
+        print(f"ML models not available: {exc}")
+        ML_AVAILABLE = False
+    return ML_AVAILABLE
 
 
 def loaded_model_names() -> list[str]:
@@ -30,7 +38,7 @@ def loaded_model_names() -> list[str]:
 
 
 def get_ml_crop_recommendation(soil_data: SoilData, location: LocationData) -> str | None:
-    if not ML_AVAILABLE:
+    if not _ensure_ml_loaded():
         return None
 
     try:
@@ -69,19 +77,19 @@ def get_ml_crop_recommendation(soil_data: SoilData, location: LocationData) -> s
 
 
 def get_district_crop_names(state: str, district: str) -> list[str]:
-    if ML_AVAILABLE:
+    if _ensure_ml_loaded():
         return ML_MODELS["district_crop_map"].get(f"{state}|{district}", [])
     return ["Wheat", "Rice", "Maize", "Cotton"]
 
 
 def get_all_crop_names() -> list[str]:
-    if ML_AVAILABLE:
+    if _ensure_ml_loaded():
         return list(ML_MODELS["crop_district_map"].keys())
     return ["Wheat", "Rice", "Maize", "Cotton", "Soybean", "Barley", "Sorghum"]
 
 
 def get_crop_districts(crop: str) -> list[dict[str, str]]:
-    if ML_AVAILABLE:
+    if _ensure_ml_loaded():
         return ML_MODELS["crop_district_map"].get(crop, [])
     return [
         {"state": "Karnataka", "district": "Bangalore"},
@@ -91,7 +99,7 @@ def get_crop_districts(crop: str) -> list[dict[str, str]]:
 
 
 def get_all_districts() -> list[dict[str, str]]:
-    if ML_AVAILABLE:
+    if _ensure_ml_loaded():
         districts = set()
         for key in ML_MODELS["district_crop_map"]:
             if "|" in key:

@@ -9,7 +9,7 @@ from pathlib import Path
 from app.core.logging import IngestionLogWriter, utc_now_iso
 from app.domain.schemas.ingestion import IndexedDocument
 from app.domain.schemas.knowledge_base import DocumentCatalogEntry, IngestionStatus
-from app.knowledge_base.paths import INGESTION_REGISTRY, ingestion_log_path
+from app.knowledge_base.paths import DOCUMENTS_MANIFEST, INGESTION_REGISTRY, ingestion_log_path
 from app.knowledge_base.registry import get_document, load_catalog, save_catalog
 
 

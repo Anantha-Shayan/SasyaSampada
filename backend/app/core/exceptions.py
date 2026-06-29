@@ -59,3 +59,11 @@ class RetryableIngestionError(RetryableError, IngestionError):
 
 class RetrievalError(SasyaSampadaError):
     """Query-time retrieval failed."""
+
+
+class LLMError(SasyaSampadaError):
+    """LLM provider call failed."""
+
+
+class RAGError(SasyaSampadaError):
+    """End-to-end RAG orchestration failed."""

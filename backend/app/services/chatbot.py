@@ -11,7 +11,7 @@ openrouter_client = None
 if CHATBOT_AVAILABLE:
     try:
         openrouter_client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url="https://openrouter.ai/api/v1/model/gemini",
             api_key=OPENROUTER_API_KEY,
         )
     except Exception as exc:

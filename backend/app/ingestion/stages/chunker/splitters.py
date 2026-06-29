@@ -138,4 +138,30 @@ def recursive_character_split(
             )
         )
 
-    return [chunk.strip() for chunk in good_splits if chunk.strip()]
+    chunks = [chunk.strip() for chunk in good_splits if chunk.strip()]
+    return _ensure_overlap(chunks, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+
+
+def _ensure_overlap(
+    chunks: list[str],
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+) -> list[str]:
+    if chunk_overlap <= 0 or len(chunks) < 2:
+        return chunks
+
+    overlapped = [chunks[0]]
+    for chunk in chunks[1:]:
+        previous = overlapped[-1]
+        overlap_text = previous[-chunk_overlap:].strip()
+        if not overlap_text or overlap_text in chunk:
+            overlapped.append(chunk)
+            continue
+
+        candidate = f"{overlap_text} {chunk}".strip()
+        if len(candidate) <= chunk_size:
+            overlapped.append(candidate)
+        else:
+            overlapped.append(chunk)
+    return overlapped

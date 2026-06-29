@@ -7,14 +7,25 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from app.core.observability import current_request_id
+
+
+class RequestIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.request_id = current_request_id()
+        return True
+
 
 def configure_logging(level: int = logging.INFO) -> None:
     root = logging.getLogger()
     if root.handlers:
         return
     handler = logging.StreamHandler(sys.stdout)
+    handler.addFilter(RequestIdFilter())
     handler.setFormatter(
-        logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
+        logging.Formatter(
+            "%(asctime)s | %(levelname)s | request_id=%(request_id)s | %(name)s | %(message)s"
+        )
     )
     root.addHandler(handler)
     root.setLevel(level)

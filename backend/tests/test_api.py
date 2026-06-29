@@ -1,44 +1,67 @@
-from fastapi.testclient import TestClient
+import asyncio
 
-from app.main import app
+from app.api import routes
+from app.models.schemas import (
+    AdvisoryRequest,
+    ChatRequest,
+    LocationData,
+    MarketPriceRequest,
+    SoilData,
+    WeatherRequest,
+)
 
-client = TestClient(app)
+
+def _run(coro):
+    return asyncio.run(coro)
 
 
 def test_health_check():
-    response = client.get("/")
+    body = _run(routes.root())
 
-    assert response.status_code == 200
-    body = response.json()
-    assert body["message"].startswith("Agrigrow API")
+    assert body["message"].startswith("SasyaSampada API")
     assert "ml_available" in body
     assert "weather_available" in body
     assert "chatbot_available" in body
 
 
+def test_api_health_and_metrics():
+    health_body = _run(routes.health_check())
+    metrics_body = _run(routes.metrics())
+
+    assert health_body["status"] == "ok"
+    assert metrics_body["success"] is True
+    assert "counters" in metrics_body
+
+
+def test_list_documents():
+    body = _run(routes.list_documents())
+
+    assert body["success"] is True
+    assert isinstance(body["documents"], list)
+
+
 def test_crop_advisory():
-    response = client.post(
-        "/api/advisory",
-        json={
-            "soil_data": {
-                "N": 90,
-                "P": 42,
-                "K": 43,
-                "temperature": 25,
-                "humidity": 80,
-                "ph": 6.5,
-                "rainfall": 120,
-            },
-            "location": {
-                "state": "Karnataka",
-                "district": "Bangalore",
-                "market": "Ramanagara",
-            },
-        },
+    body = _run(
+        routes.get_crop_advisory(
+            AdvisoryRequest(
+                soil_data=SoilData(
+                    N=90,
+                    P=42,
+                    K=43,
+                    temperature=25,
+                    humidity=80,
+                    ph=6.5,
+                    rainfall=120,
+                ),
+                location=LocationData(
+                    state="Karnataka",
+                    district="Bangalore",
+                    market="Ramanagara",
+                ),
+            )
+        )
     )
 
-    assert response.status_code == 200
-    body = response.json()
     assert body["success"] is True
     assert body["advice"]
     assert "ml_used" in body
@@ -48,60 +71,50 @@ def test_weather_uses_mock_without_api_key(monkeypatch):
     from app.services import weather
 
     monkeypatch.setattr(weather, "OPENWEATHER_API_KEY", None)
-    response = client.post("/api/weather", json={"city": "Bangalore"})
+    monkeypatch.setattr(routes, "OPENWEATHER_API_KEY", None, raising=False)
+    body = _run(routes.get_weather_data(WeatherRequest(city="Bangalore")))
 
-    assert response.status_code == 200
-    body = response.json()
     assert body["success"] is True
     assert body["weather"]["condition"] == "Sunny"
 
 
 def test_market_prices():
-    response = client.post(
-        "/api/market-prices",
-        json={
-            "state": "Karnataka",
-            "district": "Bangalore",
-            "market": "Ramanagara",
-        },
+    body = _run(
+        routes.get_market_prices(
+            MarketPriceRequest(
+                state="Karnataka",
+                district="Bangalore",
+                market="Ramanagara",
+            )
+        )
     )
 
-    assert response.status_code == 200
-    body = response.json()
     assert body["success"] is True
     assert body["best_crop"]
     assert body["best_price"]
 
 
 def test_district_crops_and_all_crops():
-    district_response = client.get("/api/district-crops/Karnataka/Bangalore")
-    crops_response = client.get("/api/crops")
-    crop_districts_response = client.get("/api/crop-districts/rice")
-    districts_response = client.get("/api/districts")
+    district_response = _run(routes.get_district_crops("Karnataka", "Bangalore"))
+    crops_response = _run(routes.get_all_crops())
+    crop_districts_response = _run(routes.get_districts_for_crop("rice"))
+    districts_response = _run(routes.list_districts())
 
-    assert district_response.status_code == 200
-    assert crops_response.status_code == 200
-    assert crop_districts_response.status_code == 200
-    assert districts_response.status_code == 200
-    assert isinstance(district_response.json()["crops"], list)
-    assert isinstance(crops_response.json()["crops"], list)
-    assert isinstance(crop_districts_response.json()["districts"], list)
-    assert isinstance(districts_response.json()["districts"], list)
+    assert isinstance(district_response["crops"], list)
+    assert isinstance(crops_response["crops"], list)
+    assert isinstance(crop_districts_response["districts"], list)
+    assert isinstance(districts_response["districts"], list)
 
 
 def test_chat_accepts_question_alias():
-    response = client.post("/api/chat", json={"question": "What soil is best for rice?"})
+    body = _run(routes.chat_with_assistant(ChatRequest(question="What soil is best for rice?")))
 
-    assert response.status_code == 200
-    body = response.json()
     assert "success" in body
     assert "response" in body
 
 
 def test_supported_languages():
-    response = client.get("/api/chat/languages")
+    body = _run(routes.get_supported_languages())
 
-    assert response.status_code == 200
-    body = response.json()
     assert body["success"] is True
     assert any(language["code"] == "english" for language in body["languages"])

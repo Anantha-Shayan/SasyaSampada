@@ -59,7 +59,7 @@ pathspec==1.1.1
 pillow==12.2.0
 platformdirs==4.10.0
 pluggy==1.6.0
-protobuf==7.35.1
+protobuf==6.33.6
 pycodestyle==2.14.0
 pydantic==2.13.4
 pydantic_core==2.46.4

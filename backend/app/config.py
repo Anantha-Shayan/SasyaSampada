@@ -34,7 +34,7 @@ CORS_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3000",
+        "http://localhost:3000,http://127.0.0.1:3001",
     ).split(",")
     if origin.strip()
 ]
@@ -68,3 +68,14 @@ QDRANT_UPSERT_BATCH_SIZE = int(os.getenv("QDRANT_UPSERT_BATCH_SIZE", "64"))
 # Retrieval (Phase 10)
 RETRIEVAL_TOP_K = int(os.getenv("RETRIEVAL_TOP_K", "10"))
 RETRIEVAL_SCORE_THRESHOLD = float(os.getenv("RETRIEVAL_SCORE_THRESHOLD", "0.0"))
+
+# Prompting / RAG (Phase 11+)
+PROMPT_CONFIG_PATH = os.getenv("PROMPT_CONFIG_PATH")
+RAG_CONTEXT_MAX_CHARS = int(os.getenv("RAG_CONTEXT_MAX_CHARS", "6000"))
+RAG_CONTEXT_CHUNK_MAX_CHARS = int(os.getenv("RAG_CONTEXT_CHUNK_MAX_CHARS", "1200"))
+
+# LLM (Phase 12)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.2"))
+LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", "900"))
