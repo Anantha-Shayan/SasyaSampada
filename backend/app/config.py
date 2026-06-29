@@ -27,6 +27,8 @@ def load_environment() -> bool:
 ENV_LOADED = load_environment()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 MANDI_PRICE_KEY = os.getenv("MANDI_PRICE_KEY")
 BACKEND_PORT = int(os.getenv("BACKEND_PORT", "8000"))
@@ -34,7 +36,7 @@ CORS_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3001",
+        "http://localhost:3001,http://127.0.0.1:3001",
     ).split(",")
     if origin.strip()
 ]

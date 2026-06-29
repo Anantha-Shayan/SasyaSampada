@@ -3,7 +3,7 @@ from typing import Any
 
 from openai import OpenAI
 
-from app.config import OPENROUTER_API_KEY
+from app.config import OPENROUTER_API_KEY, OPENROUTER_BASE_URL, OPENROUTER_MODEL
 
 CHATBOT_AVAILABLE = bool(OPENROUTER_API_KEY)
 openrouter_client = None
@@ -11,7 +11,7 @@ openrouter_client = None
 if CHATBOT_AVAILABLE:
     try:
         openrouter_client = OpenAI(
-            base_url="https://openrouter.ai/api/v1/model/gemini",
+            base_url=OPENROUTER_BASE_URL,
             api_key=OPENROUTER_API_KEY,
         )
     except Exception as exc:
@@ -28,6 +28,7 @@ def get_system_prompt(language: str = "english") -> str:
 - Market prices and farming techniques
 - Government schemes and subsidies for farmers
 
+Do not use the general knowledge you were trained on. Only use the information provided in prompt that is retrieved.
 Always provide practical, actionable advice suitable for Indian farming conditions.
 Be empathetic to farmers' challenges and provide cost-effective solutions.
 If asked about crops, consider Indian climate zones and monsoon patterns.""",
@@ -94,7 +95,7 @@ def get_chatbot_response(message: str | None, language: str = "english", context
                 "HTTP-Referer": "https://agrigrow.app",
                 "X-Title": "Agrigrow - Smart Farming Assistant",
             },
-            model="google/gemini-2.0-flash-001",
+            model=OPENROUTER_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt + context_info},
                 {"role": "user", "content": message},

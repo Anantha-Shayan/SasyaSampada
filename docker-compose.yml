@@ -10,6 +10,8 @@ services:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - MANDI_PRICE_KEY=${MANDI_PRICE_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-google/gemini-2.0-flash-001}
       - GROQ_API_KEY=${GROQ_API_KEY}
       - GROQ_MODEL=${GROQ_MODEL:-llama-3.1-8b-instant}
       - QDRANT_URL=http://qdrant:6333
