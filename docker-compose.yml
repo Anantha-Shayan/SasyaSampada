@@ -12,7 +12,7 @@ services:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - KAGGLE_API_TOKEN=${KAGGLE_API_TOKEN}
     volumes:
-      - ./backend:/app
+      - ./backend:/app:z
 
   frontend:
     build:
